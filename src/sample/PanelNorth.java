@@ -52,7 +52,7 @@ public class PanelNorth extends FlowPane{
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT)));
 
-        long endTime = ...;
+        long endTime = 999999999;
         Label timeLabel = new Label();
         DateFormat timeFormat = new SimpleDateFormat( "EEEE, d MMM yyyy HH:mm:ss" );
         final Timeline timeline = new Timeline(
@@ -75,7 +75,7 @@ public class PanelNorth extends FlowPane{
         timeline.setCycleCount( Animation.INDEFINITE );
         timeline.play();
 
-
+        this.getChildren().add(timeLabel);
     }
 /*
     class ClockListener implements EventHandler<ActionEvent>
