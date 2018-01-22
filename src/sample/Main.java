@@ -31,10 +31,15 @@ public class Main extends Application {
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         BorderPane mainPane = new BorderPane();
+        mainPane.setPadding(new Insets(height/100,height/100,height/100,height/100));
+
+
         panelNorth 		= new PanelNorth(width,height,fontSize);
         panelEast 		= new PanelEast(width,height,fontSize);
         panelWest 		= new PanelWest(width,height,fontSize);
-        panelWest.setBackground(new Background(new BackgroundFill(Color.rgb(127,119,255),CornerRadii.EMPTY,Insets.EMPTY)));
+        
+        panelNorth.init();
+        panelEast.init();
         panelWest.init();
 
         mainPane.setTop(panelNorth);
@@ -44,6 +49,7 @@ public class Main extends Application {
 
 
         Scene myScene = new Scene(mainPane, width, height, Color.rgb(48,77,95));
+        myScene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(myScene);
         primaryStage.setTitle("Hello World");
         primaryStage.show();

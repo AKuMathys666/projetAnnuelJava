@@ -2,9 +2,11 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
@@ -38,16 +40,16 @@ public class PanelWest extends VBox {
 
     public void init()
     {
-        String monImage = "img/blue_background_extra_long.jpg";
-        //ImagePanel panelDate = new ImagePanel(monImage,(12*width/100)-(2*height/100), 82*height/100);
+        this.setSpacing(height/100);
+        this.setPadding(new Insets(height/100,height/100,height/100,height/100));
+        this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResource("../img/blue_background_extra_long.jpg").toExternalForm()),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    BackgroundSize.DEFAULT)));
 
-        //panelDate.setPreferredSize(new Dimension((12*width/100)-(2*height/100),82*height/100));
-
-        //Ajout de ces derniers au panel nord
-        //this.add(panelDate);
-        //this.setVgap(height/100);
-        //this.getLayout().setHgap(0);
-
+        //this.setStyle("-fx-background-image: url('../img/blue_background_extra_long.jpg');" +
+        //        "-fx-background-size: cover;");
+        this.setPrefHeight(82*height/100);
+        this.setPrefWidth((12*width/100)-(2*height/100));
         timer = new Button("Timer");
         timer.setOnAction(new TimerListener());
 

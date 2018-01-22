@@ -1,0 +1,12 @@
+.PanelWest
+{
+    -fx-background-image: url('../img/blue_background_extra_long.jpg');
+    -fx-background-size: cover;
+}
+.button
+{
+    -fx-background-color: transparent;
+    -fx-border-color: gray;
+    -fx-font-family: Arial;
+    -fx-text-fill: black;
+}
