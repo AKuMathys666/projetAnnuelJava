@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -9,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -46,8 +51,33 @@ public class PanelNorth extends FlowPane{
         this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResource("../img/header-background-1.jpg").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT)));
-    }
 
+        long endTime = ...;
+        Label timeLabel = new Label();
+        DateFormat timeFormat = new SimpleDateFormat( "EEEE, d MMM yyyy HH:mm:ss" );
+        final Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis( 500 ),
+                        new EventHandler<ActionEvent>(){
+                            @Override
+                            public void handle(ActionEvent e) {
+                                final long diff = endTime - System.currentTimeMillis();
+                                if (diff < 0) {
+                                    //  timeLabel.setText( "00:00:00" );
+                                    timeLabel.setText(timeFormat.format(0));
+                                } else {
+                                    timeLabel.setText(timeFormat.format(diff));
+                                }
+                            }
+                        }
+                )
+        );
+        timeline.setCycleCount( Animation.INDEFINITE );
+        timeline.play();
+
+
+    }
+/*
     class ClockListener implements EventHandler<ActionEvent>
     {
         @Override
@@ -57,5 +87,5 @@ public class PanelNorth extends FlowPane{
             SimpleDateFormat df = new SimpleDateFormat("EEEE, d MMM yyyy HH:mm:ss");
             dateEtHeure.setText(df.format(Calendar.getInstance().getTime()));
         }
-    }
+    }*/
 }

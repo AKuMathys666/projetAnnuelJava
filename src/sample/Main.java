@@ -37,7 +37,7 @@ public class Main extends Application {
         panelNorth 		= new PanelNorth(width,height,fontSize);
         panelEast 		= new PanelEast(width,height,fontSize);
         panelWest 		= new PanelWest(width,height,fontSize);
-        
+
         panelNorth.init();
         panelEast.init();
         panelWest.init();
@@ -45,6 +45,8 @@ public class Main extends Application {
         mainPane.setTop(panelNorth);
         mainPane.setLeft(panelWest);
         mainPane.setRight(panelEast);
+
+        mainPane.setMargin(panelNorth,new Insets(0,0,height/100,0));
         mainPane.setBackground(new Background(new BackgroundFill(Color.rgb(48,77,95),CornerRadii.EMPTY,Insets.EMPTY)));
 
 

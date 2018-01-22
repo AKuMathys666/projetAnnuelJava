@@ -89,13 +89,8 @@ public class PanelWest extends VBox {
 
         for(Button item : listButton)
         {
-            //item.setOpaqueInsets();
-            //item.setContentAreaFilled(false);
             item.setPrefWidth((12*width/100)-(4*height/100));
             item.setPrefHeight(7*height/100);
-            //item.setFont(new Font("Arial", Font.PLAIN, (int)fontSize/60));
-            //item.setFocusPainted(false);
-            //item.setMargin(new Insets(1,1,1,1));
             this.getChildren().add(item);
         }
 
