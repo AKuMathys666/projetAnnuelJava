@@ -91,6 +91,7 @@ public class PanelWest extends VBox {
         {
             item.setPrefWidth((12*width/100)-(4*height/100));
             item.setPrefHeight(7*height/100);
+            item.setFont(Font.font("Arial",(int)fontSize/65));
             this.getChildren().add(item);
         }
 
