@@ -52,7 +52,6 @@ public class PanelNorth extends FlowPane{
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT)));
 
-        long endTime = 999999999;
         Label timeLabel = new Label();
         DateFormat timeFormat = new SimpleDateFormat( "EEEE, d MMM yyyy HH:mm:ss" );
         final Timeline timeline = new Timeline(
@@ -61,7 +60,7 @@ public class PanelNorth extends FlowPane{
                         new EventHandler<ActionEvent>(){
                             @Override
                             public void handle(ActionEvent e) {
-                                final long diff = endTime - System.currentTimeMillis();
+                                final long diff =System.currentTimeMillis();
                                 if (diff < 0) {
                                     //  timeLabel.setText( "00:00:00" );
                                     timeLabel.setText(timeFormat.format(0));
