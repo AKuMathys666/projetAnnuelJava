@@ -1,5 +1,6 @@
 package sample;
 
+import org.json.JSONObject;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,6 +17,11 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -34,6 +40,8 @@ public class PanelNorth extends HBox{
     private Button submit = new Button();
     private Label erreurLogged = new Label();
     private Button createAccount = new Button();
+
+    private String token;
 
     protected PanelEast panelEast;
 
@@ -88,7 +96,7 @@ public class PanelNorth extends HBox{
 
 
         logged = new Label("Logged with username ");
-        logged.setPrefWidth((12*width/100));
+        logged.setPrefWidth((50*width/100));
         logged.setPrefHeight(5*height/100);
         logged.setFont(Font.font("Arial",(int)fontSize/40));
         logged.setVisible(false);
@@ -164,6 +172,76 @@ public class PanelNorth extends HBox{
         datePane.getChildren().add(timeLabel);
         this.setHgrow(timeLabel,Priority.ALWAYS);
 
-        //submit.addActionListener(new SubmitListener());
+        submit.setOnAction(new SubmitListener());
+    }
+
+    class SubmitListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+            String tryLogin=login.getText();
+            String tryPassword=password.getText();
+//        	System.out.println("login "+ tryLogin + " password "+tryPassword);
+            login.setText("");
+            password.setText("");
+
+            try
+            {
+                URL url=new URL("http://localhost:8080/auth/login");
+                HttpURLConnection co =(HttpURLConnection) url.openConnection();
+                co.setRequestProperty("Content-Type", "application/json");
+                co.setRequestProperty("Accept", "application/json");
+                co.setDoOutput(true);
+                co.setRequestMethod("POST");
+
+                org.json.JSONObject cred   = new JSONObject();
+                cred.put("email",tryLogin);
+                cred.put("password", tryPassword);
+                OutputStreamWriter wr = new OutputStreamWriter(co.getOutputStream());
+                wr.write(cred.toString());
+                wr.flush();
+
+                StringBuilder sb = new StringBuilder();
+                int HttpResult = co.getResponseCode();
+                if (HttpResult == HttpURLConnection.HTTP_OK)
+                {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(co.getInputStream(), "utf-8"));
+                    String line = null;
+                    while ((line = br.readLine()) != null)
+                    {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    token = sb.toString();
+
+                    logged.setText("Logged with username "+tryLogin);
+                    logged.setVisible(true);
+                    logged.setManaged(true);
+                    login.setVisible(false);
+                    login.setManaged(false);
+                    labelLogin.setVisible(false);
+                    labelLogin.setManaged(false);
+                    labelPassword.setVisible(false);
+                    labelPassword.setManaged(false);
+                    password.setVisible(false);
+                    password.setManaged(false);
+                    submit.setVisible(false);
+                    submit.setManaged(false);
+                    erreurLogged.setText("");
+                    erreurLogged.setVisible(false);
+                    erreurLogged.setManaged(false);
+                }
+                else
+                {
+                    erreurLogged.setVisible(true);
+                    erreurLogged.setManaged(true);
+                }
+            }
+            catch(Exception exc)
+            {
+                exc.printStackTrace();
+            }
+        }
     }
 }
