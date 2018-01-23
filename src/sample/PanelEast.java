@@ -21,7 +21,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class PanelEast  extends VBox {
+public class PanelEast  extends StackPane {
 
     private int width;
     private int height;
@@ -70,15 +70,20 @@ public class PanelEast  extends VBox {
 
     public void createAccount()
     {
-        GridPane grid = new GridPane();//5,2,height/100,height/100
-        grid.setBackground(new Background(new BackgroundFill(Color.rgb(48,77,95),CornerRadii.EMPTY,Insets.EMPTY)));
+        for (int i=0;i<10;i++)
+        {
+            panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
+        }
 
+        GridPane grid = new GridPane();//5,2,height/100,height/100
+        grid.setPadding(new Insets(5*height/100, 50*width/100, 39*height/100, 5*width/100));
         panelArray[0].setVisible(true);
         panelArray[0].setManaged(true);
         //panelArray[0].setBorder(BorderFactory.createEmptyBorder(5*height/100, 5*height/100, 30*height/100, 40*width/100));
         //panelArray[0].setOpaque(false);
         grid.setVgap(height/100);
-        grid.setHgap(0);
+        grid.setHgap(height/100);
         panelArray[0].getChildren().add(grid);
 
         labelLogin = new Label("Email : ");
@@ -87,7 +92,7 @@ public class PanelEast  extends VBox {
         labelLogin.setFont(Font.font("Arial",(int)fontSize/60));
 
         login = new TextArea();
-        login.setPrefWidth(15*width/100);
+        login.setPrefWidth(20*width/100);
         login.setPrefHeight(5*height/100);
         //login.setMargin(new Insets(0,height/100,0,0));
         //login.setLineWrap(true);
@@ -112,7 +117,7 @@ public class PanelEast  extends VBox {
         labelFirstName.setFont(Font.font("Arial",(int)fontSize/60));
 
         firstName = new TextArea();
-        firstName.setPrefWidth(15*width/100);
+        firstName.setPrefWidth(20*width/100);
         firstName.setPrefHeight(5*height/100);
         //firstName.setMargin(new Insets(0,height/100,0,0));
         //firstName.setLineWrap(true);
@@ -126,7 +131,7 @@ public class PanelEast  extends VBox {
         labelLastName.setFont(Font.font("Arial",(int)fontSize/60));
 
         lastName = new TextArea();
-        lastName.setPrefWidth(15*width/100);
+        lastName.setPrefWidth(20*width/100);
         lastName.setPrefHeight(5*height/100);
         //lastName.setMargin(new Insets(0,height/100,0,0));
         //lastName.setLineWrap(true);
@@ -147,9 +152,10 @@ public class PanelEast  extends VBox {
         submit.setOnAction(new SubmitCreationListener());
 
         erreurLogged = new Label("");
-        erreurLogged.setPrefWidth(10*width/100);
+        erreurLogged.setPrefWidth(30*width/100);
         erreurLogged.setPrefHeight(5*height/100);
-        erreurLogged.setFont(Font.font("Arial",(int)fontSize/60));
+        erreurLogged.setWrapText(true);
+        erreurLogged.setFont(Font.font("Arial",(int)fontSize/70));
 
         grid.add(labelLogin,1,1);
         grid.add(login,2,1);
@@ -456,7 +462,8 @@ public class PanelEast  extends VBox {
                         }
                         br.close();
 //	       		 		System.out.println("" + sb.toString());
-                        //SwingUtilitie.getWindowAncestor(submit).setVisible(false); //not working, WHY?
+                        submit.getParent().setVisible(false); //not working, WHY?
+                        submit.getParent().setManaged(false);
                     }
                     else
                     {

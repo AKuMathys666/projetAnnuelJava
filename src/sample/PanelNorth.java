@@ -57,14 +57,14 @@ public class PanelNorth extends HBox{
         panelEast = aPanelEast;
 
         Pane datePane = new Pane();
-        datePane.setPrefWidth(50*width/100-(7*height/100));
+        datePane.setPrefWidth(40*width/100-(7*height/100));
         datePane.setPrefHeight(7*height/100);
 
         FlowPane thisPane = new FlowPane();
         thisPane.setVgap(height/100);
         thisPane.setHgap(height/100);
         thisPane.setPadding(new Insets(height/100,height/100,height/100,height/100));
-        thisPane.setPrefWidth(width-(2*height/100));
+        thisPane.setPrefWidth(60*width/100+(8*height/100));
         thisPane.setPrefHeight(15*height/100);
 
         this.setPrefWidth(width-(2*height/100));
@@ -74,6 +74,8 @@ public class PanelNorth extends HBox{
                 BackgroundSize.DEFAULT)));
 
         timeLabel = new Label();
+        timeLabel.setPrefWidth(50*width/100-(7*height/100));
+        timeLabel.setPrefHeight(7*height/100);
         timeLabel.setFont(Font.font("Arial",(int)fontSize/30));
         DateFormat timeFormat = new SimpleDateFormat( "EEEE, d MMM yyyy HH:mm:ss" );
         Timeline timeline = new Timeline(
@@ -105,9 +107,9 @@ public class PanelNorth extends HBox{
         logged.setManaged(false);
 
         erreurLogged = new Label("Erreur: login ou mot de passe incorrect. ");
-        erreurLogged.setPrefWidth((12*width/100));
+        erreurLogged.setPrefWidth((30*width/100));
         erreurLogged.setPrefHeight(5*height/100);
-        erreurLogged.setFont(Font.font("Arial",(int)fontSize/40));
+        erreurLogged.setFont(Font.font("Arial",(int)fontSize/60));
         erreurLogged.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
         erreurLogged.setVisible(false);
         erreurLogged.setManaged(false);
@@ -233,6 +235,8 @@ public class PanelNorth extends HBox{
                     erreurLogged.setText("");
                     erreurLogged.setVisible(false);
                     erreurLogged.setManaged(false);
+                    createAccount.setVisible(false);
+                    createAccount.setManaged(false);
                 }
                 else
                 {
