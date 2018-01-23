@@ -52,8 +52,10 @@ public class PanelNorth extends HBox{
         fontSize=fonts;
     }
 
-    public void init()
+    public void init(PanelEast aPanelEast)
     {
+        panelEast = aPanelEast;
+
         Pane datePane = new Pane();
         datePane.setPrefWidth(50*width/100-(7*height/100));
         datePane.setPrefHeight(7*height/100);
@@ -156,7 +158,7 @@ public class PanelNorth extends HBox{
         // createAccount.setFocusPainted(false);
         //createAccount.setMargin(new Insets(1,1,1,1));
         //createAccount.setBackground(new Color(222,222,222));
-        //createAccount.addActionListener(new CreateListener());
+        createAccount.setOnAction(new CreateListener());
 
         thisPane.getChildren().add(logged);
         thisPane.getChildren().add(labelLogin);
@@ -242,6 +244,14 @@ public class PanelNorth extends HBox{
             {
                 exc.printStackTrace();
             }
+        }
+    }
+    class CreateListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+            panelEast.createAccount();
         }
     }
 }

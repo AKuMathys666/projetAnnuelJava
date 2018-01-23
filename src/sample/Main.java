@@ -38,7 +38,7 @@ public class Main extends Application {
         panelEast 		= new PanelEast(width,height,fontSize);
         panelWest 		= new PanelWest(width,height,fontSize);
 
-        panelNorth.init();
+        panelNorth.init(panelEast);
         panelEast.init();
         panelWest.init();
 
