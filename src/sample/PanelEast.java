@@ -413,6 +413,7 @@ public class PanelEast  extends StackPane {
             String tryPassword=password.getText();
             String tryFirstName=firstName.getText();
             String tryLastName=lastName.getText();
+            erreurLogged.setText("");
             if (tryLogin.length()==0)
             {
                 erreurLogged.setText(erreurLogged.getText()+"Login is empty. ");
@@ -462,11 +463,16 @@ public class PanelEast  extends StackPane {
                         }
                         br.close();
 //	       		 		System.out.println("" + sb.toString());
-                        submit.getParent().setVisible(false); //not working, WHY?
-                        submit.getParent().setManaged(false);
+                        //submit.getParent().setVisible(false);
+                        //submit.getParent().setManaged(false);
                     }
                     else
                     {
+                        if (HttpResult == 403)
+                        {
+                            erreurLogged.setText("Cet utilisateur existe déjà.");
+                        }
+
                         System.out.println(co.getResponseMessage());
                     }
                 }
