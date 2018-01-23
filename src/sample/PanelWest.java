@@ -7,7 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PanelWest extends VBox {
@@ -37,8 +39,10 @@ public class PanelWest extends VBox {
         fontSize=fonts;
     }
 
-    public void init()
+    public void init(PanelEast aPanelEast)
     {
+        panelEast = aPanelEast;
+
         this.setSpacing(height/100);
         this.setPadding(new Insets(height/100,height/100,height/100,height/100));
         this.setBackground(new Background(new BackgroundImage(new Image(getClass().getResource("../img/blue_background_extra_long.jpg").toExternalForm()),
@@ -101,7 +105,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayTimer();
+            panelEast.displayTimer();
         }
     }
     class DashboardListener implements EventHandler<ActionEvent>
@@ -109,7 +113,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayDashboard();
+            panelEast.displayDashboard();
         }
     }
     class ReportsListener implements EventHandler<ActionEvent>
@@ -117,7 +121,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayReports();
+            panelEast.displayReports();
         }
     }
     class InsightsListener implements EventHandler<ActionEvent>
@@ -125,7 +129,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayInsights();
+            panelEast.displayInsights();
         }
     }
     class SavedReportsListener implements EventHandler<ActionEvent>
@@ -133,7 +137,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            // panelEast.displaySavedReports();
+            panelEast.displaySavedReports();
         }
     }
     class ProjectsListener implements EventHandler<ActionEvent>
@@ -141,12 +145,12 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //try {
-            //    panelEast.displayProjects();
-            //} catch (IOException | JSONException e1) {
-            //    // TODO Auto-generated catch block
-            //    e1.printStackTrace();
-            //}
+            try {
+                panelEast.displayProjects();
+            } catch (IOException | JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     }
     class ClientsListener implements EventHandler<ActionEvent>
@@ -154,7 +158,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayClients();
+            panelEast.displayClients();
         }
     }
     class TeamListener implements EventHandler<ActionEvent>
@@ -162,7 +166,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayTeam();
+            panelEast.displayTeam();
         }
     }
     class WorkspacesListener implements EventHandler<ActionEvent>
@@ -170,7 +174,7 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            //panelEast.displayWorkspaces();
+            panelEast.displayWorkspaces();
         }
     }
 }

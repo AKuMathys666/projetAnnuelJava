@@ -9,13 +9,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//import javax.swing.*;
-//import java.awt.*;
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,7 +21,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class PanelEast  extends Pane {
+public class PanelEast  extends VBox {
 
     private int width;
     private int height;
@@ -73,6 +71,8 @@ public class PanelEast  extends Pane {
     public void createAccount()
     {
         GridPane grid = new GridPane();//5,2,height/100,height/100
+        grid.setBackground(new Background(new BackgroundFill(Color.rgb(48,77,95),CornerRadii.EMPTY,Insets.EMPTY)));
+
         panelArray[0].setVisible(true);
         panelArray[0].setManaged(true);
         //panelArray[0].setBorder(BorderFactory.createEmptyBorder(5*height/100, 5*height/100, 30*height/100, 40*width/100));
@@ -144,22 +144,23 @@ public class PanelEast  extends Pane {
         //submit.setMargin(new Insets(1,1,1,1));
         //submit.setBackground(new Color(222,222,222));
         //submit.addActionListener(new SubmitCreationListener());
+        submit.setOnAction(new SubmitCreationListener());
 
         erreurLogged = new Label("");
         erreurLogged.setPrefWidth(10*width/100);
         erreurLogged.setPrefHeight(5*height/100);
         erreurLogged.setFont(Font.font("Arial",(int)fontSize/60));
 
-        panelArray[0].getChildren().add(labelLogin);
-        panelArray[0].getChildren().add(login);
-        panelArray[0].getChildren().add(labelPassword);
-        panelArray[0].getChildren().add(password);
-        panelArray[0].getChildren().add(labelFirstName);
-        panelArray[0].getChildren().add(firstName);
-        panelArray[0].getChildren().add(labelLastName);
-        panelArray[0].getChildren().add(lastName);
-        panelArray[0].getChildren().add(submit);
-        panelArray[0].getChildren().add(erreurLogged);
+        grid.add(labelLogin,1,1);
+        grid.add(login,2,1);
+        grid.add(labelPassword,1,2);
+        grid.add(password,2,2);
+        grid.add(labelFirstName,1,3);
+        grid.add(firstName,2,3);
+        grid.add(labelLastName,1,4);
+        grid.add(lastName,2,4);
+        grid.add(submit,1,5);
+        grid.add(erreurLogged,2,5);
     }
 
     public void displayTimer()
@@ -188,6 +189,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[2].setVisible(true);
         panelArray[2].setManaged(true);
@@ -208,6 +210,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[3].setVisible(true);
         panelArray[3].setManaged(true);
@@ -228,6 +231,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[4].setVisible(true);
         panelArray[4].setManaged(true);
@@ -248,6 +252,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[5].setVisible(true);
         panelArray[5].setManaged(true);
@@ -268,6 +273,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[6].setVisible(true);
         panelArray[6].setManaged(true);
@@ -334,6 +340,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[7].setVisible(true);
         panelArray[7].setManaged(true);
@@ -354,6 +361,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[8].setVisible(true);
         panelArray[8].setManaged(true);
@@ -374,6 +382,7 @@ public class PanelEast  extends Pane {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
+            panelArray[i].setManaged(false);
         }
         panelArray[9].setVisible(true);
         panelArray[9].setManaged(true);

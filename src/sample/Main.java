@@ -40,7 +40,7 @@ public class Main extends Application {
 
         panelNorth.init(panelEast);
         panelEast.init();
-        panelWest.init();
+        panelWest.init(panelEast);
 
         mainPane.setTop(panelNorth);
         mainPane.setLeft(panelWest);
