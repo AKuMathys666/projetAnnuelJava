@@ -11,15 +11,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class PanelEast  extends StackPane {
 
@@ -284,6 +283,40 @@ public class PanelEast  extends StackPane {
         panelArray[6].setVisible(true);
         panelArray[6].setManaged(true);
         //panelArray[6].removeAll();
+
+
+        URL url=new URL("http://localhost:8080/projects");
+        HttpURLConnection con =(HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        //Get Response
+        InputStream is = con.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+        String line;
+        while ((line = rd.readLine()) != null)
+        {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+        JSONArray jsonArray = new JSONArray(response.toString());
+        ArrayList<String[]> listuser = new ArrayList<String[]>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject explrObject = jsonArray.getJSONObject(i);
+            String creator=explrObject.getString("creator");
+            String title=explrObject.getString("title");
+            String equipe=explrObject.getString("equipe");
+            System.out.println(this.getUserById(creator)+" "+title+" "+equipe);
+            //String[] user = {email,last_name,first_name};
+            //listuser.add(user);
+        }
+
+
+        GridPane grid = new GridPane();//5,2,height/100,height/100
+        grid.setVgap(height/100);
+        grid.setHgap(height/100);
+
         TextArea mytext = new TextArea("displayProjects In progress");
         mytext.setPrefWidth(25*width/100);
         mytext.setPrefHeight(5*height/100);
@@ -292,7 +325,8 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[6].getChildren().add(mytext);
+        panelArray[6].getChildren().add(grid);
+        //panelArray[6].getChildren().add(mytext);
 
 //		JButton projects = new JButton("Create Projects");
 //		projects.addActionListener(new CreareProjectsListener());
@@ -339,6 +373,33 @@ public class PanelEast  extends StackPane {
 //		}
 //
 //		panelArray[6].add(panelProject);
+    }
+
+    public String getUserById(String userId)throws IOException, JSONException
+    {
+        URL url=new URL("http://localhost:8080/users/"+userId);
+        HttpURLConnection con =(HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        //Get Response
+        InputStream is = con.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+        String line;
+        while ((line = rd.readLine()) != null)
+        {
+            response.append(line);
+            response.append('\r');
+        }
+        rd.close();
+        JSONArray jsonArray = new JSONArray("["+response.toString()+"]");
+        for (int i = 0; i < jsonArray.length(); i++)
+        {
+            JSONObject explrObject = jsonArray.getJSONObject(i);
+            String email = explrObject.getString("email");
+            return email;
+        }
+        return "";
     }
 
     public void displayClients()
