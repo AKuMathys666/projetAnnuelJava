@@ -15,8 +15,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Iterator;
 
 public class PanelEast  extends StackPane {
 
@@ -36,6 +34,7 @@ public class PanelEast  extends StackPane {
     private Label erreurLogged;
 
     private ArrayList<CheckBox> headerCheckbox = new ArrayList<CheckBox>();
+    private ArrayList<String> headerIdProject = new ArrayList<String>();
     private ArrayList<Label> headerProject = new ArrayList<Label>();
     private ArrayList<Label> headerCreator = new ArrayList<Label>();
     private ArrayList<Label> headerTeam = new ArrayList<Label>();
@@ -303,6 +302,7 @@ public class PanelEast  extends StackPane {
         con.setRequestMethod("GET");
 
         headerCheckbox.add(new CheckBox());
+        headerIdProject.add("IdProject");
         headerProject.add(new Label("Project"));
         headerCreator.add(new Label("Creator"));
         headerTeam.add(new Label("Team"));
@@ -331,6 +331,7 @@ public class PanelEast  extends StackPane {
             JSONObject explrObject = jsonArray.getJSONObject(i);
 
             headerCheckbox.add(new CheckBox());
+            headerIdProject.add(explrObject.getString("_id"));
             headerProject.add(new Label(explrObject.getString("title")));
             headerCreator.add(new Label(this.getUserById(explrObject.getString("creator"))));
             headerTeam.add(new Label(this.getTeamById(explrObject.getString("equipe"))));
@@ -395,6 +396,7 @@ public class PanelEast  extends StackPane {
         deleteProject.setFont(Font.font("Arial",(int)fontSize/65));
         deleteProject.setPrefWidth(10*width/100);
         deleteProject.setPrefHeight(7*height/100);
+        deleteProject.setOnAction(new DeleteProjectListener());
         selectProject.setFont(Font.font("Arial",(int)fontSize/65));
         selectProject.setPrefWidth(10*width/100);
         selectProject.setPrefHeight(7*height/100);
@@ -584,8 +586,38 @@ public class PanelEast  extends StackPane {
     class DeleteProjectListener implements EventHandler<ActionEvent>
     {
         @Override
-        public void handle(ActionEvent e) {
+        public void handle(ActionEvent e){
+            for(int i=1;i<headerCheckbox.size();i++)
+            {
+                if(headerCheckbox.get(i).isSelected()==true){
+                    try {
+                        URL url=new URL("http://localhost:8080/projects/"+headerIdProject.get(i));
+                        HttpURLConnection con =(HttpURLConnection) url.openConnection();
+                        con.setRequestProperty("Content-Type", "application/json");
+                        con.setRequestProperty("Accept", "application/json");
+                        con.setRequestProperty("Authorization", token);
+                        //System.out.println(token);
+                        con.setRequestMethod("DELETE");
 
+                        //Get Response
+                        InputStream is = con.getInputStream();
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+                        String line;
+                        while ((line = rd.readLine()) != null)
+                        {
+                            response.append(line);
+                            response.append('\r');
+                        }
+                        rd.close();
+
+                    }
+                    catch(Exception exc)
+                    {
+                        exc.printStackTrace();
+                    }
+                }
+            }
         }
     }
     class SubmitCreationListener implements EventHandler<ActionEvent>
