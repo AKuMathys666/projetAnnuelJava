@@ -217,7 +217,8 @@ public class PanelNorth extends HBox{
                         sb.append(line + "\n");
                     }
                     br.close();
-                    token = sb.toString();
+                    token=sb.toString().replace("\n","");
+                    panelEast.token=token;
 
                     logged.setText("Logged with username "+tryLogin);
                     logged.setVisible(true);
