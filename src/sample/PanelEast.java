@@ -3,10 +3,7 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -38,7 +35,7 @@ public class PanelEast  extends StackPane {
     private Button submit;
     private Label erreurLogged;
 
-    public Pane[] panelArray= new Pane[10];
+    public ScrollPane[] panelArray= new ScrollPane[10];
 
     protected String token;
 
@@ -60,12 +57,14 @@ public class PanelEast  extends StackPane {
 
         for (int i=0;i<10;i++)
         {
-            panelArray[i]= new Pane();
+            panelArray[i]= new ScrollPane();
             panelArray[i].setPrefWidth((88*width/100)-(3*height/100));
             panelArray[i].setPrefHeight(81*height/100);
             this.getChildren().add(panelArray[i]);
             panelArray[i].setVisible(false);
             panelArray[i].setManaged(false);
+            panelArray[i].setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            panelArray[i].setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             //panelArray[i].setOpaque(false);
         }
     }
@@ -86,7 +85,7 @@ public class PanelEast  extends StackPane {
         //panelArray[0].setOpaque(false);
         grid.setVgap(height/100);
         grid.setHgap(height/100);
-        panelArray[0].getChildren().add(grid);
+        panelArray[0].setContent(grid);
 
         labelLogin = new Label("Email : ");
         labelLogin.setPrefWidth(10*width/100);
@@ -189,7 +188,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[1].getChildren().add(mytext);
+        panelArray[1].setContent(mytext);
     }
 
     public void displayDashboard()
@@ -210,7 +209,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[2].getChildren().add(mytext);
+        panelArray[2].setContent(mytext);
     }
 
     public void displayReports()
@@ -231,7 +230,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[3].getChildren().add(mytext);
+        panelArray[3].setContent(mytext);
     }
 
     public void displayInsights()
@@ -252,7 +251,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[4].getChildren().add(mytext);
+        panelArray[4].setContent(mytext);
     }
 
     public void displaySavedReports()
@@ -273,7 +272,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[5].getChildren().add(mytext);
+        panelArray[5].setContent(mytext);
     }
 
     public void displayProjects() throws IOException, JSONException
@@ -287,10 +286,29 @@ public class PanelEast  extends StackPane {
         panelArray[6].setManaged(true);
         //panelArray[6].removeAll();
 
+        GridPane grid = new GridPane();
 
         URL url=new URL("http://localhost:8080/projects");
         HttpURLConnection con =(HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
+
+        ArrayList<CheckBox> headerCheckbox = new ArrayList<CheckBox>();
+        ArrayList<Label> headerProject = new ArrayList<Label>();
+        ArrayList<Label> headerCreator = new ArrayList<Label>();
+        ArrayList<Label> headerTeam = new ArrayList<Label>();
+        ArrayList<Label> headerStatus = new ArrayList<Label>();
+
+        headerCheckbox.add(new CheckBox());
+        headerProject.add(new Label("Project"));
+        headerCreator.add(new Label("Creator"));
+        headerTeam.add(new Label("Team"));
+        headerStatus.add(new Label("Status"));
+
+        grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
+        grid.add(headerProject.get(headerProject.size()-1),2,1);
+        grid.add(headerCreator.get(headerCreator.size()-1),3,1);
+        grid.add(headerTeam.get(headerTeam.size()-1),4,1);
+        grid.add(headerStatus.get(headerStatus.size()-1),5,1);
 
         //Get Response
         InputStream is = con.getInputStream();
@@ -304,19 +322,55 @@ public class PanelEast  extends StackPane {
         }
         rd.close();
         JSONArray jsonArray = new JSONArray(response.toString());
-        ArrayList<String[]> listuser = new ArrayList<String[]>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject explrObject = jsonArray.getJSONObject(i);
-            String creator=explrObject.getString("creator");
-            String title=explrObject.getString("title");
-            String equipe=explrObject.getString("equipe");
-            System.out.println(this.getUserById(creator)+" "+title+" "+this.getTeamById(equipe));
+
+            headerCheckbox.add(new CheckBox());
+            headerProject.add(new Label(explrObject.getString("title")));
+            headerCreator.add(new Label(this.getUserById(explrObject.getString("creator"))));
+            headerTeam.add(new Label(this.getTeamById(explrObject.getString("equipe"))));
+            headerStatus.add(new Label("Status"));
+
+            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+i);
+            grid.add(headerProject.get(headerProject.size()-1),2,2+i);
+            grid.add(headerCreator.get(headerCreator.size()-1),3,2+i);
+            grid.add(headerTeam.get(headerTeam.size()-1),4,2+i);
+            grid.add(headerStatus.get(headerStatus.size()-1),5,2+i);
+
+            for(int j = 0; j < headerCheckbox.size(); j++)
+            {
+
+                headerCheckbox.get(j).setPrefWidth(5*width/100);
+                headerCheckbox.get(j).setPrefHeight(5*height/100);
+                headerCheckbox.get(j).setWrapText(true);
+
+                headerProject.get(j).setPrefWidth(15*width/100);
+                headerProject.get(j).setPrefHeight(5*height/100);
+                headerProject.get(j).setWrapText(true);
+                headerProject.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                headerCreator.get(j).setPrefWidth(15*width/100);
+                headerCreator.get(j).setPrefHeight(5*height/100);
+                headerCreator.get(j).setWrapText(true);
+                headerCreator.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                headerTeam.get(j).setPrefWidth(15*width/100);
+                headerTeam.get(j).setPrefHeight(5*height/100);
+                headerTeam.get(j).setWrapText(true);
+                headerTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                headerStatus.get(j).setPrefWidth(15*width/100);
+                headerStatus.get(j).setPrefHeight(5*height/100);
+                headerStatus.get(j).setWrapText(true);
+                headerStatus.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+            }
+            //System.out.println(this.getUserById(creator)+" "+title+" "+this.getTeamById(equipe));
             //String[] user = {email,last_name,first_name};
             //listuser.add(user);
         }
 
 
-        GridPane grid = new GridPane();//5,2,height/100,height/100
+        //GridPane grid = new GridPane();//5,2,height/100,height/100
         grid.setVgap(height/100);
         grid.setHgap(height/100);
 
@@ -328,7 +382,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[6].getChildren().add(grid);
+        panelArray[6].setContent(grid);
         //panelArray[6].getChildren().add(mytext);
 
     }
@@ -420,7 +474,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[7].getChildren().add(mytext);
+        panelArray[7].setContent(mytext);
     }
 
     public void displayTeam()
@@ -441,7 +495,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[8].getChildren().add(mytext);
+        panelArray[8].setContent(mytext);
     }
 
     public void displayWorkspaces()
@@ -462,7 +516,7 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/65));
-        panelArray[9].getChildren().add(mytext);
+        panelArray[9].setContent(mytext);
     }
 
     class SubmitCreationListener implements EventHandler<ActionEvent>
