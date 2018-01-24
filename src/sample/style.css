@@ -13,3 +13,18 @@
 .scroll-pane .viewport{
     -fx-background-color: transparent;
 }
+
+.button:hover
+{
+    -fx-background-color: transparent;
+    -fx-border-color: slategray;
+    -fx-font-family: Arial;
+    -fx-text-fill: black;
+}
+.button:pressed
+{
+    -fx-background-color: transparent;
+    -fx-border-color: darkgrey;
+    -fx-font-family: Arial;
+    -fx-text-fill: black;
+}

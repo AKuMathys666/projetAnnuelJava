@@ -35,6 +35,16 @@ public class PanelEast  extends StackPane {
     private Button submit;
     private Label erreurLogged;
 
+    private ArrayList<CheckBox> headerCheckbox = new ArrayList<CheckBox>();
+    private ArrayList<Label> headerProject = new ArrayList<Label>();
+    private ArrayList<Label> headerCreator = new ArrayList<Label>();
+    private ArrayList<Label> headerTeam = new ArrayList<Label>();
+    private ArrayList<Label> headerStatus = new ArrayList<Label>();
+
+    private Button deleteProject = new Button();
+    private Button selectProject = new Button();
+    private Button addProject = new Button();
+
     public ScrollPane[] panelArray= new ScrollPane[10];
 
     protected String token;
@@ -292,12 +302,6 @@ public class PanelEast  extends StackPane {
         HttpURLConnection con =(HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
-        ArrayList<CheckBox> headerCheckbox = new ArrayList<CheckBox>();
-        ArrayList<Label> headerProject = new ArrayList<Label>();
-        ArrayList<Label> headerCreator = new ArrayList<Label>();
-        ArrayList<Label> headerTeam = new ArrayList<Label>();
-        ArrayList<Label> headerStatus = new ArrayList<Label>();
-
         headerCheckbox.add(new CheckBox());
         headerProject.add(new Label("Project"));
         headerCreator.add(new Label("Creator"));
@@ -322,7 +326,8 @@ public class PanelEast  extends StackPane {
         }
         rd.close();
         JSONArray jsonArray = new JSONArray(response.toString());
-        for (int i = 0; i < jsonArray.length(); i++) {
+        int i;
+        for (i = 0; i < jsonArray.length(); i++) {
             JSONObject explrObject = jsonArray.getJSONObject(i);
 
             headerCheckbox.add(new CheckBox());
@@ -374,7 +379,7 @@ public class PanelEast  extends StackPane {
         grid.setVgap(height/100);
         grid.setHgap(height/100);
 
-        TextArea mytext = new TextArea("displayProjects In progress");
+        TextArea mytext = new TextArea("Vous devez être connecté pour avoir accès aux projets.");
         mytext.setPrefWidth(25*width/100);
         mytext.setPrefHeight(5*height/100);
         //mytext.setMargin(new Insets(0,height/100,0,0));
@@ -382,9 +387,34 @@ public class PanelEast  extends StackPane {
         //mytext.setWrapStyleWord(true);
         //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[6].setContent(grid);
-        //panelArray[6].getChildren().add(mytext);
 
+        deleteProject = new Button("Delete project");
+        selectProject = new Button("Select project");
+        addProject = new Button("Add project");
+
+        deleteProject.setFont(Font.font("Arial",(int)fontSize/65));
+        deleteProject.setPrefWidth(10*width/100);
+        deleteProject.setPrefHeight(7*height/100);
+        selectProject.setFont(Font.font("Arial",(int)fontSize/65));
+        selectProject.setPrefWidth(10*width/100);
+        selectProject.setPrefHeight(7*height/100);
+        addProject.setFont(Font.font("Arial",(int)fontSize/65));
+        addProject.setPrefWidth(10*width/100);
+        addProject.setPrefHeight(7*height/100);
+
+        grid.add(deleteProject,1,2+i);
+        grid.add(selectProject,2,2+i);
+        grid.add(addProject,3,2+i);
+
+        if(token.length()!=0)
+        {
+            panelArray[6].setContent(grid);
+        }
+        else{
+            panelArray[6].setContent(mytext);
+        }
+
+        headerCheckbox.get(0).setOnAction(new AllBoxesListener());
     }
 
     public String getUserById(String userId)throws IOException, JSONException
@@ -519,6 +549,45 @@ public class PanelEast  extends StackPane {
         panelArray[9].setContent(mytext);
     }
 
+    class AllBoxesListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+            if (headerCheckbox.get(0).isSelected()) {
+                for (int incr = 0; incr < headerCheckbox.size(); incr++) {
+                    headerCheckbox.get(incr).setSelected(true);
+                }
+            } else {
+                for (int index = 0; index < headerCheckbox.size(); index++) {
+                    headerCheckbox.get(index).setSelected(false);
+                }
+            }
+        }
+    }
+    class SelectProjectListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e) {
+
+        }
+    }
+
+    class GetFormAddProjectListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e) {
+
+        }
+    }
+
+    class DeleteProjectListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e) {
+
+        }
+    }
     class SubmitCreationListener implements EventHandler<ActionEvent>
     {
         @Override
