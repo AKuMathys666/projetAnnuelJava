@@ -31,7 +31,11 @@ public class PanelEast  extends StackPane {
     private Label labelLastName;
     private TextArea lastName;
     private Button submit;
+    private Button submitProject;
     private Label erreurLogged;
+
+    private Label labelTitre;
+    private TextArea titre;
 
     private ArrayList<CheckBox> headerCheckbox = new ArrayList<CheckBox>();
     private ArrayList<String> headerIdProject = new ArrayList<String>();
@@ -188,19 +192,14 @@ public class PanelEast  extends StackPane {
         }
         panelArray[1].setVisible(true);
         panelArray[1].setManaged(true);
-        //panelArray[1].removeAll();
         TextArea mytext = new TextArea("displayTimer In progress");
         mytext.setPrefWidth(25*width/100);
         mytext.setPrefHeight(5*height/100);
-        //mytext.setMargin(new Insets(0,height/100,0,0));
-        //mytext.setLineWrap(true);
-        //mytext.setWrapStyleWord(true);
-        //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
         panelArray[1].setContent(mytext);
     }
 
-    public void displayDashboard()
+    public void displayCreateTask()
     {
         for (int i=0;i<10;i++)
         {
@@ -209,14 +208,9 @@ public class PanelEast  extends StackPane {
         }
         panelArray[2].setVisible(true);
         panelArray[2].setManaged(true);
-        //panelArray[2].removeAll();
         TextArea mytext = new TextArea("displayDashboard In progress");
         mytext.setPrefWidth(25*width/100);
         mytext.setPrefHeight(5*height/100);
-        //mytext.setMargin(new Insets(0,height/100,0,0));
-        //mytext.setLineWrap(true);
-        //mytext.setWrapStyleWord(true);
-        //mytext.setBackground(new Color(222,222,222));
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
         panelArray[2].setContent(mytext);
     }
@@ -263,25 +257,55 @@ public class PanelEast  extends StackPane {
         panelArray[4].setContent(mytext);
     }
 
-    public void displaySavedReports()
+    public void displayCreateProject()
     {
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
             panelArray[i].setManaged(false);
         }
-        panelArray[5].setVisible(true);
-        panelArray[5].setManaged(true);
-        //panelArray[5].removeAll();
-        TextArea mytext = new TextArea("displaySavedReports In progress");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        //mytext.setMargin(new Insets(0,height/100,0,0));
-        //mytext.setLineWrap(true);
-        //mytext.setWrapStyleWord(true);
-        //mytext.setBackground(new Color(222,222,222));
-        mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[5].setContent(mytext);
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(5*height/100, 50*width/100, 39*height/100, 5*width/100));
+        panelArray[0].setVisible(true);
+        panelArray[0].setManaged(true);
+        grid.setVgap(height/100);
+        grid.setHgap(height/100);
+        panelArray[0].setContent(grid);
+
+        labelTitre = new Label("Nom du projet : ");
+        labelTitre.setPrefWidth(10*width/100);
+        labelTitre.setPrefHeight(5*height/100);
+        labelTitre.setFont(Font.font("Arial",(int)fontSize/60));
+
+        titre = new TextArea();
+        titre.setPrefWidth(20*width/100);
+        titre.setPrefHeight(5*height/100);
+        titre.setFont(Font.font("Arial",(int)fontSize/60));
+
+
+        submitProject = new Button("Submit");
+        //submit.setContentAreaFilled(false);
+        submitProject.setPrefWidth(10*width/100);
+        submitProject.setPrefHeight(5*height/100);
+        //submit.setMargin(new Insets(0,height/100,0,0));
+        submitProject.setFont(Font.font("Arial",(int)fontSize/60));
+        //submit.setFocusPainted(false);
+        //submit.setMargin(new Insets(1,1,1,1));
+        //submit.setBackground(new Color(222,222,222));
+        //submit.addActionListener(new SubmitCreationListener());
+        submitProject.setOnAction(new SubmitFormAddProjectListener());
+
+        erreurLogged = new Label("");
+        erreurLogged.setPrefWidth(30*width/100);
+        erreurLogged.setPrefHeight(5*height/100);
+        erreurLogged.setWrapText(true);
+        erreurLogged.setFont(Font.font("Arial",(int)fontSize/70));
+
+        grid.add(labelTitre,1,1);
+        grid.add(titre,2,1);
+        grid.add(submitProject,1,5);
+        grid.add(erreurLogged,2,5);
     }
 
     public void displayProjects() throws IOException, JSONException
@@ -397,12 +421,15 @@ public class PanelEast  extends StackPane {
         deleteProject.setPrefWidth(10*width/100);
         deleteProject.setPrefHeight(7*height/100);
         deleteProject.setOnAction(new DeleteProjectListener());
+
         selectProject.setFont(Font.font("Arial",(int)fontSize/65));
         selectProject.setPrefWidth(10*width/100);
         selectProject.setPrefHeight(7*height/100);
+
         addProject.setFont(Font.font("Arial",(int)fontSize/65));
         addProject.setPrefWidth(10*width/100);
         addProject.setPrefHeight(7*height/100);
+        addProject.setOnAction(new GetFormAddProjectListener());
 
         grid.add(deleteProject,1,2+i);
         grid.add(selectProject,2,2+i);
@@ -574,14 +601,14 @@ public class PanelEast  extends StackPane {
 
         }
     }
-
     class GetFormAddProjectListener implements EventHandler<ActionEvent>
     {
         @Override
         public void handle(ActionEvent e) {
-
+            displayCreateProject();
         }
     }
+
 
     class DeleteProjectListener implements EventHandler<ActionEvent>
     {
@@ -610,7 +637,7 @@ public class PanelEast  extends StackPane {
                             response.append('\r');
                         }
                         rd.close();
-
+                        displayProjects();
                     }
                     catch(Exception exc)
                     {
@@ -691,6 +718,67 @@ public class PanelEast  extends StackPane {
 
                         System.out.println(co.getResponseMessage());
                     }
+                }
+                catch(Exception exc)
+                {
+                    exc.printStackTrace();
+                }
+            }
+        }
+    }
+
+    class SubmitFormAddProjectListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+            String tryTitre=titre.getText();
+            erreurLogged.setText("");
+            if (tryTitre.length()==0)
+            {
+                erreurLogged.setText(erreurLogged.getText()+"Last name is empty. ");
+            }
+            System.out.println(erreurLogged.getText().length()+erreurLogged.getText());
+            if(erreurLogged.getText().length() == 0)
+            {
+                try
+                {
+                    URL url=new URL("http://localhost:8080/projects");
+                    HttpURLConnection co =(HttpURLConnection) url.openConnection();
+                    co.setRequestProperty("Content-Type", "application/json");
+                    co.setRequestProperty("Accept", "application/json");
+                    co.setRequestProperty("Authorization", token);
+                    co.setDoOutput(true);
+                    co.setRequestMethod("POST");
+
+                    JSONObject cred   = new JSONObject();
+                    cred.put("title",tryTitre);
+                    OutputStreamWriter wr = new OutputStreamWriter(co.getOutputStream());
+                    wr.write(cred.toString());
+                    wr.flush();
+
+                    StringBuilder sb = new StringBuilder();
+                    int HttpResult = co.getResponseCode();
+                    if (HttpResult == HttpURLConnection.HTTP_OK)
+                    {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(co.getInputStream(), "utf-8"));
+                        String line = null;
+                        while ((line = br.readLine()) != null)
+                        {
+                            sb.append(line + "\n");
+                        }
+                        br.close();
+                    }
+                    else
+                    {
+                        if (HttpResult == 403)
+                        {
+                            erreurLogged.setText("Name already taken.");
+                        }
+
+                        System.out.println(co.getResponseMessage());
+                    }
+                    displayProjects();
                 }
                 catch(Exception exc)
                 {

@@ -21,10 +21,8 @@ public class PanelWest extends VBox {
     private float fontSize;
 
     private Button timer;
-    private Button dashboard;
     private Button reports;
     private Button insights;
-    private Button savedReports;
     private Button projects;
     private Button clients;
     private Button team;
@@ -56,17 +54,11 @@ public class PanelWest extends VBox {
         timer = new Button("Timer");
         timer.setOnAction(new TimerListener());
 
-        dashboard = new Button("Dashboard");
-        dashboard.setOnAction(new DashboardListener());
-
         reports = new Button("Reports");
         reports.setOnAction(new ReportsListener());
 
         insights = new Button("Insights");
         insights.setOnAction(new InsightsListener());
-
-        savedReports = new Button("Saved Reports");
-        savedReports.setOnAction(new SavedReportsListener());
 
         projects = new Button("Projects");
         projects.setOnAction(new ProjectsListener());
@@ -81,10 +73,8 @@ public class PanelWest extends VBox {
         workspaces.setOnAction(new WorkspacesListener());
 
         listButton.add(timer);
-        listButton.add(dashboard);
         listButton.add(reports);
         listButton.add(insights);
-        listButton.add(savedReports);
         listButton.add(projects);
         listButton.add(clients);
         listButton.add(team);
@@ -108,14 +98,6 @@ public class PanelWest extends VBox {
             panelEast.displayTimer();
         }
     }
-    class DashboardListener implements EventHandler<ActionEvent>
-    {
-        @Override
-        public void handle(ActionEvent e)
-        {
-            panelEast.displayDashboard();
-        }
-    }
     class ReportsListener implements EventHandler<ActionEvent>
     {
         @Override
@@ -130,14 +112,6 @@ public class PanelWest extends VBox {
         public void handle(ActionEvent e)
         {
             panelEast.displayInsights();
-        }
-    }
-    class SavedReportsListener implements EventHandler<ActionEvent>
-    {
-        @Override
-        public void handle(ActionEvent e)
-        {
-            panelEast.displaySavedReports();
         }
     }
     class ProjectsListener implements EventHandler<ActionEvent>
