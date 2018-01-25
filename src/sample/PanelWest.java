@@ -21,7 +21,6 @@ public class PanelWest extends VBox {
     private float fontSize;
 
     private Button timer;
-    private Button reports;
     private Button insights;
     private Button projects;
     private Button clients;
@@ -54,9 +53,6 @@ public class PanelWest extends VBox {
         timer = new Button("Timer");
         timer.setOnAction(new TimerListener());
 
-        reports = new Button("Reports");
-        reports.setOnAction(new ReportsListener());
-
         insights = new Button("Insights");
         insights.setOnAction(new InsightsListener());
 
@@ -73,7 +69,6 @@ public class PanelWest extends VBox {
         workspaces.setOnAction(new WorkspacesListener());
 
         listButton.add(timer);
-        listButton.add(reports);
         listButton.add(insights);
         listButton.add(projects);
         listButton.add(clients);
@@ -96,14 +91,6 @@ public class PanelWest extends VBox {
         public void handle(ActionEvent e)
         {
             panelEast.displayTimer();
-        }
-    }
-    class ReportsListener implements EventHandler<ActionEvent>
-    {
-        @Override
-        public void handle(ActionEvent e)
-        {
-            panelEast.displayReports();
         }
     }
     class InsightsListener implements EventHandler<ActionEvent>
@@ -140,7 +127,12 @@ public class PanelWest extends VBox {
         @Override
         public void handle(ActionEvent e)
         {
-            panelEast.displayTeam();
+            try {
+                panelEast.displayTeam();
+            } catch (IOException | JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     }
     class WorkspacesListener implements EventHandler<ActionEvent>
