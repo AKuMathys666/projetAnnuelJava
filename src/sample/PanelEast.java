@@ -71,6 +71,21 @@ public class PanelEast  extends StackPane {
         height=hei;
         fontSize=fonts;
     }
+    public void clearAllArray()
+    {
+        headerCheckbox.clear();
+        headerIdProject.clear();
+        headerProject.clear();
+        headerCreator.clear();
+        headerIdTeam.clear();
+        headerTeam.clear();
+        headerStatus.clear();
+        headerIdProjectInTeam.clear();
+        headerRolesInTeam.clear();
+        headerMemberInTeam.clear();
+        headerMember.clear();
+        headerIdMember.clear();
+    }
 
     public void init()
     {
@@ -198,6 +213,7 @@ public class PanelEast  extends StackPane {
 
     public void displayTimer()
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -214,6 +230,7 @@ public class PanelEast  extends StackPane {
 
     public void displayCreateTask()
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -230,6 +247,7 @@ public class PanelEast  extends StackPane {
 
     public void displayAddMember() throws IOException, JSONException
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -237,9 +255,6 @@ public class PanelEast  extends StackPane {
         }
         panelArray[3].setVisible(true);
         panelArray[3].setManaged(true);
-
-        headerCheckbox.clear();
-
 
         GridPane grid = new GridPane();
 
@@ -315,6 +330,7 @@ public class PanelEast  extends StackPane {
 
     public void displayInsights()
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -336,6 +352,7 @@ public class PanelEast  extends StackPane {
 
     public void displayCreateProject()
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -387,6 +404,7 @@ public class PanelEast  extends StackPane {
 
     public void displayProjects() throws IOException, JSONException
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -595,6 +613,7 @@ public class PanelEast  extends StackPane {
 
     public void displayClients()
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -611,6 +630,7 @@ public class PanelEast  extends StackPane {
 
     public void displayTeam()throws IOException, JSONException
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -753,6 +773,7 @@ public class PanelEast  extends StackPane {
 
     public void displayWorkspaces()
     {
+        clearAllArray();
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -1060,8 +1081,11 @@ public class PanelEast  extends StackPane {
         @Override
         public void handle(ActionEvent e)
         {
+            System.out.println("checkbox size "+headerCheckbox.size());
             for(int i=1;i<headerCheckbox.size();i++) {
+                System.out.println("i="+i+"; headerCheckbox.size()="+headerCheckbox.size());
                 if (headerCheckbox.get(i).isSelected() == true) {
+                    System.out.println("checkbox "+i+" checked");
                     try {
                         URL url = new URL("http://localhost:8080/teams/"+selectedTeam+"/"+headerIdMember.get(i));
                         HttpURLConnection co = (HttpURLConnection) url.openConnection();
@@ -1091,6 +1115,10 @@ public class PanelEast  extends StackPane {
                     } catch (Exception exc) {
                         exc.printStackTrace();
                     }
+                }
+                else
+                {
+                    System.out.println("checkbox "+i+" not checked");
                 }
             }
         }
