@@ -1045,7 +1045,7 @@ public class PanelEast  extends StackPane {
         @Override
         public void handle(ActionEvent e){
             System.out.println("checkbox size = "+headerCheckbox.size()+"; headerIdMember size = "+headerIdMember.size());
-            for(int i=1;i<headerCheckbox.size()-1;i++)
+            for(int i=1;i<headerCheckbox.size();i++)
             {
                 if(headerCheckbox.get(i).isSelected()==true){
                     try {
