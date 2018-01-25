@@ -323,9 +323,6 @@ public class PanelEast  extends StackPane {
 
         headerCheckbox.get(0).setOnAction(new AllBoxesListener());
 
-
-
-
     }
 
     public void displayInsights()
@@ -630,7 +627,9 @@ public class PanelEast  extends StackPane {
 
     public void displayTeam()throws IOException, JSONException
     {
+        //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
         clearAllArray();
+        //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
         for (int i=0;i<10;i++)
         {
             panelArray[i].setVisible(false);
@@ -649,6 +648,7 @@ public class PanelEast  extends StackPane {
         headerCheckbox.clear();
 
         headerCheckbox.add(new CheckBox());
+        headerIdMember.add("idMember");
         headerMemberInTeam.add(new Label("Members"));
         headerRolesInTeam.add(new Label("Roles"));
         headerIdProjectInTeam.add(new Label("Project"));
@@ -683,6 +683,7 @@ public class PanelEast  extends StackPane {
                 headerCheckbox.add(new CheckBox());
                 headerRolesInTeam.add(new Label(this.getRoleById(arrayRoleID.getString(k))));
                 headerMemberInTeam.add(new Label(this.getUserById(arrayMemberID.getString(k))));
+                headerIdMember.add(arrayMemberID.getString(k));
 
                 grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+k);
                 grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,2+k);
@@ -742,6 +743,7 @@ public class PanelEast  extends StackPane {
         }
 
         headerCheckbox.get(0).setOnAction(new AllBoxesListener());
+        //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
     }
 
     public String getRoleById(String roleId)throws IOException, JSONException
@@ -1042,11 +1044,12 @@ public class PanelEast  extends StackPane {
     {
         @Override
         public void handle(ActionEvent e){
-            for(int i=1;i<headerCheckbox.size();i++)
+            System.out.println("checkbox size = "+headerCheckbox.size()+"; headerIdMember size = "+headerIdMember.size());
+            for(int i=1;i<headerCheckbox.size()-1;i++)
             {
                 if(headerCheckbox.get(i).isSelected()==true){
                     try {
-                        URL url=new URL("http://localhost:8080/projects/"+headerIdProject.get(i));
+                        URL url=new URL("http://localhost:8080/teams/"+selectedTeam+"/"+headerIdMember.get(i));
                         HttpURLConnection con =(HttpURLConnection) url.openConnection();
                         con.setRequestProperty("Content-Type", "application/json");
                         con.setRequestProperty("Accept", "application/json");
@@ -1065,13 +1068,19 @@ public class PanelEast  extends StackPane {
                             response.append('\r');
                         }
                         rd.close();
-                        displayTeam();
                     }
                     catch(Exception exc)
                     {
                         exc.printStackTrace();
                     }
                 }
+            }
+            try {
+                displayTeam();
+            }
+            catch (Exception exc)
+            {
+                exc.printStackTrace();
             }
         }
     }
@@ -1083,7 +1092,7 @@ public class PanelEast  extends StackPane {
         {
             System.out.println("checkbox size "+headerCheckbox.size());
             for(int i=1;i<headerCheckbox.size();i++) {
-                System.out.println("i="+i+"; headerCheckbox.size()="+headerCheckbox.size());
+                System.out.println("i="+i+"; headerCheckbox.size()="+headerCheckbox.size()+"name = "+headerMember.get(i).toString());
                 if (headerCheckbox.get(i).isSelected() == true) {
                     System.out.println("checkbox "+i+" checked");
                     try {
@@ -1095,23 +1104,17 @@ public class PanelEast  extends StackPane {
                         co.setDoOutput(true);
                         co.setRequestMethod("POST");
 
-                        StringBuilder sb = new StringBuilder();
-                        int HttpResult = co.getResponseCode();
-                        if (HttpResult == HttpURLConnection.HTTP_OK) {
-                            BufferedReader br = new BufferedReader(new InputStreamReader(co.getInputStream(), "utf-8"));
-                            String line = null;
-                            while ((line = br.readLine()) != null) {
-                                sb.append(line + "\n");
-                            }
-                            br.close();
-                        } else {
-                            if (HttpResult == 403) {
-                                erreurLogged.setText("Name already taken.");
-                            }
-
-                            System.out.println(co.getResponseMessage());
+                        //Get Response
+                        InputStream is = co.getInputStream();
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+                        String line;
+                        while ((line = rd.readLine()) != null)
+                        {
+                            response.append(line);
+                            response.append('\r');
                         }
-                        displayTeam();
+                        rd.close();
                     } catch (Exception exc) {
                         exc.printStackTrace();
                     }
@@ -1120,6 +1123,13 @@ public class PanelEast  extends StackPane {
                 {
                     System.out.println("checkbox "+i+" not checked");
                 }
+            }
+            try {
+                displayTeam();
+            }
+            catch (Exception exc)
+            {
+                exc.printStackTrace();
             }
         }
     }
