@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.control.*;
 import org.json.JSONObject;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -8,10 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -33,7 +30,7 @@ public class PanelNorth extends HBox{
 
     private Label logged = new Label();
     private Label labelLogin = new Label();
-    private TextArea login = new TextArea();
+    private TextField login = new TextField();
     private Label labelPassword = new Label();
     private PasswordField password = new PasswordField();
     private Label timeLabel = new Label();
@@ -76,7 +73,7 @@ public class PanelNorth extends HBox{
         timeLabel = new Label();
         timeLabel.setPrefWidth(50*width/100-(7*height/100));
         timeLabel.setPrefHeight(7*height/100);
-        timeLabel.setFont(Font.font("Arial",(int)fontSize/30));
+        timeLabel.setFont(Font.font("Arial",(int)fontSize/35));
         DateFormat timeFormat = new SimpleDateFormat( "EEEE, d MMM yyyy HH:mm:ss" );
         Timeline timeline = new Timeline(
                 new KeyFrame(
@@ -117,7 +114,7 @@ public class PanelNorth extends HBox{
         labelLogin.setPrefHeight(5*height/100);
         labelLogin.setFont(Font.font("Arial",(int)fontSize/60));
 
-        login = new TextArea();
+        login = new TextField();
         login.setPrefWidth((13*width/100));
         login.setPrefHeight(5*height/100);
         login.setFont(Font.font("Arial",(int)fontSize/60));

@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.TimeZone;
 
 public class PanelEast  extends StackPane {
@@ -28,20 +27,20 @@ public class PanelEast  extends StackPane {
     private float fontSize;
 
     private Label labelLogin;
-    private TextArea login;
+    private TextField login;
     private Label labelPassword;
     private PasswordField password;
     private Label labelFirstName;
-    private TextArea firstName;
+    private TextField firstName;
     private Label labelLastName;
-    private TextArea lastName;
+    private TextField lastName;
     private Button submit;
     private Button submitProject;
     private Button submitTask;
     private Label erreurLogged;
 
     private Label labelTitre;
-    private TextArea titre;
+    private TextField titre;
 
     private ArrayList<CheckBox> headerCheckbox = new ArrayList<CheckBox>();
     private ArrayList<String> headerIdProject = new ArrayList<String>();
@@ -157,7 +156,7 @@ public class PanelEast  extends StackPane {
         labelLogin.setPrefHeight(5*height/100);
         labelLogin.setFont(Font.font("Arial",(int)fontSize/60));
 
-        login = new TextArea();
+        login = new TextField();
         login.setPrefWidth(20*width/100);
         login.setPrefHeight(5*height/100);
         login.setFont(Font.font("Arial",(int)fontSize/60));
@@ -177,7 +176,7 @@ public class PanelEast  extends StackPane {
         labelFirstName.setPrefHeight(5*height/100);
         labelFirstName.setFont(Font.font("Arial",(int)fontSize/60));
 
-        firstName = new TextArea();
+        firstName = new TextField();
         firstName.setPrefWidth(20*width/100);
         firstName.setPrefHeight(5*height/100);
         firstName.setFont(Font.font("Arial",(int)fontSize/60));
@@ -187,7 +186,7 @@ public class PanelEast  extends StackPane {
         labelLastName.setPrefHeight(5*height/100);
         labelLastName.setFont(Font.font("Arial",(int)fontSize/60));
 
-        lastName = new TextArea();
+        lastName = new TextField();
         lastName.setPrefWidth(20*width/100);
         lastName.setPrefHeight(5*height/100);
         lastName.setFont(Font.font("Arial",(int)fontSize/60));
@@ -515,7 +514,7 @@ public class PanelEast  extends StackPane {
         labelTitre.setPrefHeight(5*height/100);
         labelTitre.setFont(Font.font("Arial",(int)fontSize/60));
 
-        titre = new TextArea();
+        titre = new TextField();
         titre.setPrefWidth(20*width/100);
         titre.setPrefHeight(5*height/100);
         titre.setFont(Font.font("Arial",(int)fontSize/60));
@@ -941,28 +940,6 @@ public class PanelEast  extends StackPane {
             e1.printStackTrace();
         }
         return "";
-    }
-
-    public void displayWorkspaces()
-    {
-        clearAllArray();
-        for (int i=0;i<10;i++)
-        {
-            panelArray[i].setVisible(false);
-            panelArray[i].setManaged(false);
-        }
-        panelArray[9].setVisible(true);
-        panelArray[9].setManaged(true);
-        //panelArray[9].removeAll();
-        TextArea mytext = new TextArea("displayWorkspaces In progress");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        //mytext.setMargin(new Insets(0,height/100,0,0));
-        //mytext.setLineWrap(true);
-        //mytext.setWrapStyleWord(true);
-        //mytext.setBackground(new Color(222,222,222));
-        mytext.setFont(Font.font("Arial",(int)fontSize/65));
-        panelArray[9].setContent(mytext);
     }
 
     class AllBoxesListener implements EventHandler<ActionEvent>
