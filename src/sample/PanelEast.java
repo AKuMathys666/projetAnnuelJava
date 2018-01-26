@@ -1062,14 +1062,7 @@ public class PanelEast  extends StackPane {
             {
                 erreurLogged.setText(erreurLogged.getText()+"Password is empty. ");
             }
-            if (tryFirstName.length()==0)
-            {
-                erreurLogged.setText(erreurLogged.getText()+"First name is empty. ");
-            }
-            if (tryLastName.length()==0)
-            {
-                erreurLogged.setText(erreurLogged.getText()+"Last name is empty. ");
-            }
+
             System.out.println(erreurLogged.getText().length()+erreurLogged.getText());
             if(erreurLogged.getText().length() == 0)
             {
@@ -1085,8 +1078,16 @@ public class PanelEast  extends StackPane {
                     JSONObject cred   = new JSONObject();
                     cred.put("email",tryLogin);
                     cred.put("password", tryPassword);
-                    cred.put("first_name",tryFirstName);
-                    cred.put("last_name", tryLastName);
+                    if (tryFirstName.length()!=0)
+                    {
+                        cred.put("first_name",tryFirstName);
+                    }
+                    if (tryLastName.length()!=0)
+                    {
+                        cred.put("last_name", tryLastName);
+                    }
+
+
                     OutputStreamWriter wr = new OutputStreamWriter(co.getOutputStream());
                     wr.write(cred.toString());
                     wr.flush();
