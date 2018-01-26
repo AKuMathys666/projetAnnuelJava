@@ -21,7 +21,7 @@ public class PanelWest extends VBox {
     private float fontSize;
 
     private Button timer;
-    private Button insights;
+    private Button tasks;
     private Button projects;
     private Button clients;
     private Button team;
@@ -53,8 +53,8 @@ public class PanelWest extends VBox {
         timer = new Button("Timer");
         timer.setOnAction(new TimerListener());
 
-        insights = new Button("Insights");
-        insights.setOnAction(new InsightsListener());
+        tasks = new Button("Tasks");
+        tasks.setOnAction(new TasksListener());
 
         projects = new Button("Projects");
         projects.setOnAction(new ProjectsListener());
@@ -69,7 +69,7 @@ public class PanelWest extends VBox {
         workspaces.setOnAction(new WorkspacesListener());
 
         listButton.add(timer);
-        listButton.add(insights);
+        listButton.add(tasks);
         listButton.add(projects);
         listButton.add(clients);
         listButton.add(team);
@@ -93,27 +93,25 @@ public class PanelWest extends VBox {
             panelEast.displayTimer();
         }
     }
-    class InsightsListener implements EventHandler<ActionEvent>
+
+    class TasksListener implements EventHandler<ActionEvent>
     {
         @Override
         public void handle(ActionEvent e)
         {
-            panelEast.displayInsights();
+            panelEast.displayTasks();
         }
     }
+
     class ProjectsListener implements EventHandler<ActionEvent>
     {
         @Override
         public void handle(ActionEvent e)
         {
-            try {
-                panelEast.displayProjects();
-            } catch (IOException | JSONException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
+            panelEast.displayProjects();
         }
     }
+
     class ClientsListener implements EventHandler<ActionEvent>
     {
         @Override
@@ -122,19 +120,16 @@ public class PanelWest extends VBox {
             panelEast.displayClients();
         }
     }
+
     class TeamListener implements EventHandler<ActionEvent>
     {
         @Override
         public void handle(ActionEvent e)
         {
-            try {
-                panelEast.displayTeam();
-            } catch (IOException | JSONException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
+            panelEast.displayTeam();
         }
     }
+
     class WorkspacesListener implements EventHandler<ActionEvent>
     {
         @Override

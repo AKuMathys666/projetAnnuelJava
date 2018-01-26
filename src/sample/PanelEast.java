@@ -50,6 +50,12 @@ public class PanelEast  extends StackPane {
     private ArrayList<Label> headerMember = new ArrayList<Label>();
     private ArrayList<String> headerIdMember = new ArrayList<String>();
 
+    private ArrayList<String> headerIdTask = new ArrayList<String>();
+    private ArrayList<Label> headerTaskName = new ArrayList<Label>();
+    private ArrayList<Label> headerStartDate = new ArrayList<Label>();
+    private ArrayList<Label>  headerDuration = new ArrayList<Label>();
+    private ArrayList<Label> headerEndDate = new ArrayList<Label>();
+
     private Button deleteProject = new Button();
     private Button selectProject = new Button();
     private Button addProject = new Button();
@@ -61,6 +67,10 @@ public class PanelEast  extends StackPane {
     private String selectedProjet;
     private String selectedTeam;
 
+    private Button deleteTask = new Button();
+    private Button selectTask = new Button();
+    private Button addTask = new Button();
+
     public ScrollPane[] panelArray= new ScrollPane[10];
 
     protected String token;
@@ -71,6 +81,7 @@ public class PanelEast  extends StackPane {
         height=hei;
         fontSize=fonts;
     }
+
     public void clearAllArray()
     {
         headerCheckbox.clear();
@@ -85,6 +96,11 @@ public class PanelEast  extends StackPane {
         headerMemberInTeam.clear();
         headerMember.clear();
         headerIdMember.clear();
+        headerTaskName.clear();
+        headerStartDate.clear();
+        headerDuration.clear();
+        headerEndDate.clear();
+        headerIdTask.clear();
     }
 
     public void init()
@@ -245,7 +261,7 @@ public class PanelEast  extends StackPane {
         panelArray[2].setContent(mytext);
     }
 
-    public void displayAddMember() throws IOException, JSONException
+    public void displayAddMember()
     {
         clearAllArray();
         for (int i=0;i<10;i++)
@@ -258,75 +274,85 @@ public class PanelEast  extends StackPane {
 
         GridPane grid = new GridPane();
 
-        URL url=new URL("http://localhost:8080/users");
-        HttpURLConnection con =(HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        headerCheckbox.add(new CheckBox());
-        headerMember.add(new Label("users"));
-        headerIdMember.add("idMember");
-
-        grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
-        grid.add(headerMember.get(headerMember.size()-1),2,1);
-
-        //Get Response
-        InputStream is = con.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-        String line;
-        while ((line = rd.readLine()) != null)
+        try
         {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-        JSONArray jsonArray = new JSONArray(response.toString());
-        int i;
-        for (i = 0; i < jsonArray.length(); i++) {
-            JSONObject explrObject = jsonArray.getJSONObject(i);
+            URL url=new URL("http://localhost:8080/users");
+            HttpURLConnection con =(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
 
             headerCheckbox.add(new CheckBox());
-            headerMember.add(new Label(explrObject.getString("email")));
-            headerIdMember.add(explrObject.getString("_id"));
+            headerMember.add(new Label("users"));
+            headerIdMember.add("idMember");
 
-            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+i);
-            grid.add(headerMember.get(headerMember.size()-1),2,2+i);
+            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
+            grid.add(headerMember.get(headerMember.size()-1),2,1);
 
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null)
+            {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            JSONArray jsonArray = new JSONArray(response.toString());
+            int i;
+            for (i = 0; i < jsonArray.length(); i++) {
+                JSONObject explrObject = jsonArray.getJSONObject(i);
+
+                headerCheckbox.add(new CheckBox());
+                headerMember.add(new Label(explrObject.getString("email")));
+                headerIdMember.add(explrObject.getString("_id"));
+
+                grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+i);
+                grid.add(headerMember.get(headerMember.size()-1),2,2+i);
+
+            }
+
+            for(int j = 0; j < headerCheckbox.size(); j++)
+            {
+
+                headerCheckbox.get(j).setPrefWidth(5*width/100);
+                headerCheckbox.get(j).setPrefHeight(5*height/100);
+                headerCheckbox.get(j).setWrapText(true);
+
+                headerMember.get(j).setPrefWidth(15*width/100);
+                headerMember.get(j).setPrefHeight(5*height/100);
+                headerMember.get(j).setWrapText(true);
+                headerMember.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+            }
+            grid.setVgap(height/100);
+            grid.setHgap(height/100);
+
+            postAddMember = new Button("Add Member");
+
+            postAddMember.setFont(Font.font("Arial",(int)fontSize/65));
+            postAddMember.setPrefWidth(10*width/100);
+            postAddMember.setPrefHeight(7*height/100);
+            postAddMember.setOnAction(new SubmitFormAddMemberListener());
+
+            grid.add(postAddMember,1,2+i);
+
+            panelArray[3].setContent(grid);
+
+            headerCheckbox.get(0).setOnAction(new AllBoxesListener());
         }
-
-        for(int j = 0; j < headerCheckbox.size(); j++)
-        {
-
-            headerCheckbox.get(j).setPrefWidth(5*width/100);
-            headerCheckbox.get(j).setPrefHeight(5*height/100);
-            headerCheckbox.get(j).setWrapText(true);
-
-            headerMember.get(j).setPrefWidth(15*width/100);
-            headerMember.get(j).setPrefHeight(5*height/100);
-            headerMember.get(j).setWrapText(true);
-            headerMember.get(j).setFont(Font.font("Arial",(int)fontSize/70));
-
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
-        grid.setVgap(height/100);
-        grid.setHgap(height/100);
-
-        postAddMember = new Button("Add Member");
-
-        postAddMember.setFont(Font.font("Arial",(int)fontSize/65));
-        postAddMember.setPrefWidth(10*width/100);
-        postAddMember.setPrefHeight(7*height/100);
-        postAddMember.setOnAction(new SubmitFormAddMemberListener());
-
-        grid.add(postAddMember,1,2+i);
-
-        panelArray[3].setContent(grid);
-
-        headerCheckbox.get(0).setOnAction(new AllBoxesListener());
-
     }
 
-    public void displayInsights()
+    public void displayTasks()
     {
+
+
+
+
         clearAllArray();
         for (int i=0;i<10;i++)
         {
@@ -335,16 +361,129 @@ public class PanelEast  extends StackPane {
         }
         panelArray[4].setVisible(true);
         panelArray[4].setManaged(true);
-        //panelArray[4].removeAll();
-        TextArea mytext = new TextArea("displayInsights In progress");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        //mytext.setMargin(new Insets(0,height/100,0,0));
-        //mytext.setLineWrap(true);
-        //mytext.setWrapStyleWord(true);
-        //mytext.setBackground(new Color(222,222,222));
-        mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[4].setContent(mytext);
+
+        GridPane grid = new GridPane();
+
+        try {
+            System.out.println("http://localhost:8080/tasks/" + selectedProjet);
+            URL url = new URL("http://localhost:8080/tasks/" + selectedProjet);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Authorization", token);
+            con.setRequestMethod("GET");
+
+            headerCheckbox.add(new CheckBox());
+            headerProject.add(new Label("Project"));
+            headerCreator.add(new Label("Creator"));
+            headerIdTask.add("Id Task");
+            headerTaskName.add(new Label("Task name"));
+            headerStartDate.add(new Label("Start date"));
+            headerDuration.add(new Label("Duration"));
+            headerEndDate.add(new Label("End date"));
+
+            grid.add(headerCheckbox.get(headerCheckbox.size() - 1), 1, 1);
+            grid.add(headerTaskName.get(headerTaskName.size() - 1), 2, 1);
+            grid.add(headerStartDate.get(headerStartDate.size() - 1), 3, 1);
+            grid.add(headerDuration.get(headerDuration.size() - 1), 4, 1);
+            grid.add(headerEndDate.get(headerEndDate.size() - 1), 5, 1);
+
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            JSONArray jsonArray = new JSONArray(response.toString());
+            int i;
+            for (i = 0; i < jsonArray.length(); i++) {
+                JSONObject explrObject = jsonArray.getJSONObject(i);
+
+                headerCheckbox.add(new CheckBox());
+                headerIdTask.add(explrObject.getString("_id"));
+                headerTaskName.add(new Label(explrObject.getString("title")));
+                headerStartDate.add(new Label(explrObject.getString("startDate")));
+                headerDuration.add(new Label(explrObject.getString("times")));
+                headerEndDate.add(new Label(explrObject.getString("endDate")));
+
+                grid.add(headerCheckbox.get(headerCheckbox.size() - 1), 1, 2 + i);
+                grid.add(headerTaskName.get(headerTaskName.size() - 1), 2, 2 + i);
+                grid.add(headerStartDate.get(headerStartDate.size() - 1), 3, 2 + i);
+                grid.add(headerDuration.get(headerDuration.size() - 1), 4, 2 + i);
+                grid.add(headerEndDate.get(headerEndDate.size() - 1), 5, 2 + i);
+
+                for (int j = 0; j < headerCheckbox.size(); j++) {
+
+                    headerCheckbox.get(j).setPrefWidth(5 * width / 100);
+                    headerCheckbox.get(j).setPrefHeight(5 * height / 100);
+                    headerCheckbox.get(j).setWrapText(true);
+
+                    headerTaskName.get(j).setPrefWidth(15 * width / 100);
+                    headerTaskName.get(j).setPrefHeight(5 * height / 100);
+                    headerTaskName.get(j).setWrapText(true);
+                    headerTaskName.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+
+                    headerStartDate.get(j).setPrefWidth(15 * width / 100);
+                    headerStartDate.get(j).setPrefHeight(5 * height / 100);
+                    headerStartDate.get(j).setWrapText(true);
+                    headerStartDate.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+
+                    headerDuration.get(j).setPrefWidth(15 * width / 100);
+                    headerDuration.get(j).setPrefHeight(5 * height / 100);
+                    headerDuration.get(j).setWrapText(true);
+                    headerDuration.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+
+                    headerEndDate.get(j).setPrefWidth(15 * width / 100);
+                    headerEndDate.get(j).setPrefHeight(5 * height / 100);
+                    headerEndDate.get(j).setWrapText(true);
+                    headerEndDate.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+                }
+            }
+            grid.setVgap(height / 100);
+            grid.setHgap(height / 100);
+
+            TextArea mytext = new TextArea("Vous devez être connecté pour avoir accès aux projets.");
+            mytext.setPrefWidth(25 * width / 100);
+            mytext.setPrefHeight(5 * height / 100);
+            mytext.setFont(Font.font("Arial", (int) fontSize / 60));
+
+            deleteTask = new Button("Delete task");
+            selectTask = new Button("Select task");
+            addTask = new Button("Add task");
+
+            deleteTask.setFont(Font.font("Arial", (int) fontSize / 65));
+            deleteTask.setPrefWidth(10 * width / 100);
+            deleteTask.setPrefHeight(7 * height / 100);
+            deleteTask.setOnAction(new DeleteTaskListener());
+
+            selectTask.setFont(Font.font("Arial", (int) fontSize / 65));
+            selectTask.setPrefWidth(10 * width / 100);
+            selectTask.setPrefHeight(7 * height / 100);
+            selectTask.setOnAction(new SelectTaskListener());
+
+            addTask.setFont(Font.font("Arial", (int) fontSize / 65));
+            addTask.setPrefWidth(10 * width / 100);
+            addTask.setPrefHeight(7 * height / 100);
+            addTask.setOnAction(new GetFormAddTaskListener());
+
+            grid.add(deleteTask, 1, 2 + i);
+            grid.add(selectTask, 2, 2 + i);
+            grid.add(addTask, 3, 2 + i);
+
+            if (token.length() != 0) {
+                panelArray[4].setContent(grid);
+            } else {
+                panelArray[4].setContent(mytext);
+            }
+
+            headerCheckbox.get(0).setOnAction(new AllBoxesListener());
+        }
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 
     public void displayCreateProject()
@@ -399,7 +538,7 @@ public class PanelEast  extends StackPane {
         grid.add(erreurLogged,2,5);
     }
 
-    public void displayProjects() throws IOException, JSONException
+    public void displayProjects()
     {
         clearAllArray();
         for (int i=0;i<10;i++)
@@ -413,199 +552,220 @@ public class PanelEast  extends StackPane {
 
         GridPane grid = new GridPane();
 
-        URL url=new URL("http://localhost:8080/projects");
-        HttpURLConnection con =(HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        headerCheckbox.clear();
-
-        headerCheckbox.add(new CheckBox());
-        headerIdProject.add("IdProject");
-        headerProject.add(new Label("Project"));
-        headerCreator.add(new Label("Creator"));
-        headerIdTeam.add("IdTeam");
-        headerTeam.add(new Label("Team"));
-        headerStatus.add(new Label("Status"));
-
-        grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
-        grid.add(headerProject.get(headerProject.size()-1),2,1);
-        grid.add(headerCreator.get(headerCreator.size()-1),3,1);
-        grid.add(headerTeam.get(headerTeam.size()-1),4,1);
-        grid.add(headerStatus.get(headerStatus.size()-1),5,1);
-
-        //Get Response
-        InputStream is = con.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-        String line;
-        while ((line = rd.readLine()) != null)
+        try
         {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-        JSONArray jsonArray = new JSONArray(response.toString());
-        int i;
-        for (i = 0; i < jsonArray.length(); i++) {
-            JSONObject explrObject = jsonArray.getJSONObject(i);
+            URL url=new URL("http://localhost:8080/projects");
+            HttpURLConnection con =(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            headerCheckbox.clear();
 
             headerCheckbox.add(new CheckBox());
-            headerIdProject.add(explrObject.getString("_id"));
-            headerProject.add(new Label(explrObject.getString("title")));
-            headerCreator.add(new Label(this.getUserById(explrObject.getString("creator"))));
-            headerIdTeam.add(explrObject.getString("equipe"));
-            headerTeam.add(new Label(this.getTeamById(explrObject.getString("equipe"))));
+            headerIdProject.add("IdProject");
+            headerProject.add(new Label("Project"));
+            headerCreator.add(new Label("Creator"));
+            headerIdTeam.add("IdTeam");
+            headerTeam.add(new Label("Team"));
             headerStatus.add(new Label("Status"));
 
-            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+i);
-            grid.add(headerProject.get(headerProject.size()-1),2,2+i);
-            grid.add(headerCreator.get(headerCreator.size()-1),3,2+i);
-            grid.add(headerTeam.get(headerTeam.size()-1),4,2+i);
-            grid.add(headerStatus.get(headerStatus.size()-1),5,2+i);
+            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
+            grid.add(headerProject.get(headerProject.size()-1),2,1);
+            grid.add(headerCreator.get(headerCreator.size()-1),3,1);
+            grid.add(headerTeam.get(headerTeam.size()-1),4,1);
+            grid.add(headerStatus.get(headerStatus.size()-1),5,1);
 
-            for(int j = 0; j < headerCheckbox.size(); j++)
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null)
             {
-
-                headerCheckbox.get(j).setPrefWidth(5*width/100);
-                headerCheckbox.get(j).setPrefHeight(5*height/100);
-                headerCheckbox.get(j).setWrapText(true);
-
-                headerProject.get(j).setPrefWidth(15*width/100);
-                headerProject.get(j).setPrefHeight(5*height/100);
-                headerProject.get(j).setWrapText(true);
-                headerProject.get(j).setFont(Font.font("Arial",(int)fontSize/70));
-
-                headerCreator.get(j).setPrefWidth(15*width/100);
-                headerCreator.get(j).setPrefHeight(5*height/100);
-                headerCreator.get(j).setWrapText(true);
-                headerCreator.get(j).setFont(Font.font("Arial",(int)fontSize/70));
-
-                headerTeam.get(j).setPrefWidth(15*width/100);
-                headerTeam.get(j).setPrefHeight(5*height/100);
-                headerTeam.get(j).setWrapText(true);
-                headerTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
-
-                headerStatus.get(j).setPrefWidth(15*width/100);
-                headerStatus.get(j).setPrefHeight(5*height/100);
-                headerStatus.get(j).setWrapText(true);
-                headerStatus.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+                response.append(line);
+                response.append('\r');
             }
-            //System.out.println(this.getUserById(creator)+" "+title+" "+this.getTeamById(equipe));
-            //String[] user = {email,last_name,first_name};
-            //listuser.add(user);
+            rd.close();
+            JSONArray jsonArray = new JSONArray(response.toString());
+            int i;
+            for (i = 0; i < jsonArray.length(); i++) {
+                JSONObject explrObject = jsonArray.getJSONObject(i);
+
+                headerCheckbox.add(new CheckBox());
+                headerIdProject.add(explrObject.getString("_id"));
+                headerProject.add(new Label(explrObject.getString("title")));
+                headerCreator.add(new Label(this.getUserById(explrObject.getString("creator"))));
+                headerIdTeam.add(explrObject.getString("equipe"));
+                headerTeam.add(new Label(this.getTeamById(explrObject.getString("equipe"))));
+                headerStatus.add(new Label("Status"));
+
+                grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+i);
+                grid.add(headerProject.get(headerProject.size()-1),2,2+i);
+                grid.add(headerCreator.get(headerCreator.size()-1),3,2+i);
+                grid.add(headerTeam.get(headerTeam.size()-1),4,2+i);
+                grid.add(headerStatus.get(headerStatus.size()-1),5,2+i);
+
+                for(int j = 0; j < headerCheckbox.size(); j++)
+                {
+
+                    headerCheckbox.get(j).setPrefWidth(5*width/100);
+                    headerCheckbox.get(j).setPrefHeight(5*height/100);
+                    headerCheckbox.get(j).setWrapText(true);
+
+                    headerProject.get(j).setPrefWidth(15*width/100);
+                    headerProject.get(j).setPrefHeight(5*height/100);
+                    headerProject.get(j).setWrapText(true);
+                    headerProject.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                    headerCreator.get(j).setPrefWidth(15*width/100);
+                    headerCreator.get(j).setPrefHeight(5*height/100);
+                    headerCreator.get(j).setWrapText(true);
+                    headerCreator.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                    headerTeam.get(j).setPrefWidth(15*width/100);
+                    headerTeam.get(j).setPrefHeight(5*height/100);
+                    headerTeam.get(j).setWrapText(true);
+                    headerTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                    headerStatus.get(j).setPrefWidth(15*width/100);
+                    headerStatus.get(j).setPrefHeight(5*height/100);
+                    headerStatus.get(j).setWrapText(true);
+                    headerStatus.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+                }
+                //System.out.println(this.getUserById(creator)+" "+title+" "+this.getTeamById(equipe));
+                //String[] user = {email,last_name,first_name};
+                //listuser.add(user);
+            }
+
+
+            //GridPane grid = new GridPane();//5,2,height/100,height/100
+            grid.setVgap(height/100);
+            grid.setHgap(height/100);
+
+            TextArea mytext = new TextArea("Vous devez être connecté pour avoir accès aux projets.");
+            mytext.setPrefWidth(25*width/100);
+            mytext.setPrefHeight(5*height/100);
+            //mytext.setMargin(new Insets(0,height/100,0,0));
+            //mytext.setLineWrap(true);
+            //mytext.setWrapStyleWord(true);
+            //mytext.setBackground(new Color(222,222,222));
+            mytext.setFont(Font.font("Arial",(int)fontSize/60));
+
+            deleteProject = new Button("Delete project");
+            selectProject = new Button("Select project");
+            addProject = new Button("Add project");
+
+            deleteProject.setFont(Font.font("Arial",(int)fontSize/65));
+            deleteProject.setPrefWidth(10*width/100);
+            deleteProject.setPrefHeight(7*height/100);
+            deleteProject.setOnAction(new DeleteProjectListener());
+
+            selectProject.setFont(Font.font("Arial",(int)fontSize/65));
+            selectProject.setPrefWidth(10*width/100);
+            selectProject.setPrefHeight(7*height/100);
+            selectProject.setOnAction(new SelectProjectListener());
+
+            addProject.setFont(Font.font("Arial",(int)fontSize/65));
+            addProject.setPrefWidth(10*width/100);
+            addProject.setPrefHeight(7*height/100);
+            addProject.setOnAction(new GetFormAddProjectListener());
+
+            grid.add(deleteProject,1,2+i);
+            grid.add(selectProject,2,2+i);
+            grid.add(addProject,3,2+i);
+
+            if(token.length()!=0)
+            {
+                panelArray[6].setContent(grid);
+            }
+            else{
+                panelArray[6].setContent(mytext);
+            }
+
+            headerCheckbox.get(0).setOnAction(new AllBoxesListener());
         }
-
-
-        //GridPane grid = new GridPane();//5,2,height/100,height/100
-        grid.setVgap(height/100);
-        grid.setHgap(height/100);
-
-        TextArea mytext = new TextArea("Vous devez être connecté pour avoir accès aux projets.");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        //mytext.setMargin(new Insets(0,height/100,0,0));
-        //mytext.setLineWrap(true);
-        //mytext.setWrapStyleWord(true);
-        //mytext.setBackground(new Color(222,222,222));
-        mytext.setFont(Font.font("Arial",(int)fontSize/60));
-
-        deleteProject = new Button("Delete project");
-        selectProject = new Button("Select project");
-        addProject = new Button("Add project");
-
-        deleteProject.setFont(Font.font("Arial",(int)fontSize/65));
-        deleteProject.setPrefWidth(10*width/100);
-        deleteProject.setPrefHeight(7*height/100);
-        deleteProject.setOnAction(new DeleteProjectListener());
-
-        selectProject.setFont(Font.font("Arial",(int)fontSize/65));
-        selectProject.setPrefWidth(10*width/100);
-        selectProject.setPrefHeight(7*height/100);
-        selectProject.setOnAction(new SelectProjectListener());
-
-        addProject.setFont(Font.font("Arial",(int)fontSize/65));
-        addProject.setPrefWidth(10*width/100);
-        addProject.setPrefHeight(7*height/100);
-        addProject.setOnAction(new GetFormAddProjectListener());
-
-        grid.add(deleteProject,1,2+i);
-        grid.add(selectProject,2,2+i);
-        grid.add(addProject,3,2+i);
-
-        if(token.length()!=0)
-        {
-            panelArray[6].setContent(grid);
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
-        else{
-            panelArray[6].setContent(mytext);
-        }
-
-        headerCheckbox.get(0).setOnAction(new AllBoxesListener());
     }
 
-    public String getUserById(String userId) throws IOException, JSONException
+    public String getUserById(String userId)
     {
-        URL url=new URL("http://localhost:8080/users/"+userId);
-        HttpURLConnection con =(HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+        try{
+            URL url=new URL("http://localhost:8080/users/"+userId);
+            HttpURLConnection con =(HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
 
-        //Get Response
-        InputStream is = con.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-        String line;
-        while ((line = rd.readLine()) != null)
-        {
-            response.append(line);
-            response.append('\r');
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null)
+            {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            JSONArray jsonArray = new JSONArray("["+response.toString()+"]");
+            for (int i = 0; i < jsonArray.length(); i++)
+            {
+                JSONObject explrObject = jsonArray.getJSONObject(i);
+                String email = explrObject.getString("email");
+                return email;
+            }
+            return "";
         }
-        rd.close();
-        JSONArray jsonArray = new JSONArray("["+response.toString()+"]");
-        for (int i = 0; i < jsonArray.length(); i++)
-        {
-            JSONObject explrObject = jsonArray.getJSONObject(i);
-            String email = explrObject.getString("email");
-            return email;
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
         return "";
     }
 
-    public String getTeamById(String teamId)throws IOException, JSONException
+    public String getTeamById(String teamId)
     {
-        URL url=new URL("http://localhost:8080/teams/"+teamId);
-        HttpURLConnection con =(HttpURLConnection) url.openConnection();
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Accept", "application/json");
-        con.setRequestProperty("Authorization", token);
-        //System.out.println(token);
-        con.setRequestMethod("GET");
+        try{
+            URL url=new URL("http://localhost:8080/teams/"+teamId);
+            HttpURLConnection con =(HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestProperty("Authorization", token);
+            //System.out.println(token);
+            con.setRequestMethod("GET");
 
-        //Get Response
-        InputStream is = con.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-        String line;
-        while ((line = rd.readLine()) != null)
-        {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null)
+            {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
 
-        JSONObject explrObject = new JSONObject(response.toString());
-        String members="";
-        JSONArray arrayMemberID = explrObject.getJSONArray("members");
-        for (int i=0;i<arrayMemberID.length();i++)
-        {
-            if (i==0)
+            JSONObject explrObject = new JSONObject(response.toString());
+            String members="";
+            JSONArray arrayMemberID = explrObject.getJSONArray("members");
+            for (int i=0;i<arrayMemberID.length();i++)
             {
-                members+=this.getUserById(arrayMemberID.getString(i));
+                if (i==0)
+                {
+                    members+=this.getUserById(arrayMemberID.getString(i));
+                }
+                else
+                {
+                    members+=", "+this.getUserById(arrayMemberID.getString(i));
+                }
             }
-            else
-            {
-                members+=", "+this.getUserById(arrayMemberID.getString(i));
-            }
+            return members;
         }
-        return members;
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        return "";
     }
 
     public void displayClients()
@@ -625,7 +785,7 @@ public class PanelEast  extends StackPane {
         panelArray[7].setContent(mytext);
     }
 
-    public void displayTeam()throws IOException, JSONException
+    public void displayTeam()
     {
         //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
         clearAllArray();
@@ -639,138 +799,150 @@ public class PanelEast  extends StackPane {
         panelArray[8].setManaged(true);
 
         GridPane grid = new GridPane();
+        try{
+            URL url=new URL("http://localhost:8080/teams/"+selectedTeam);
+            HttpURLConnection con =(HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Authorization", token);
+            con.setRequestMethod("GET");
 
-        URL url=new URL("http://localhost:8080/teams/"+selectedTeam);
-        HttpURLConnection con =(HttpURLConnection) url.openConnection();
-        con.setRequestProperty("Authorization", token);
-        con.setRequestMethod("GET");
+            headerCheckbox.clear();
 
-        headerCheckbox.clear();
+            headerCheckbox.add(new CheckBox());
+            headerIdMember.add("idMember");
+            headerMemberInTeam.add(new Label("Members"));
+            headerRolesInTeam.add(new Label("Roles"));
+            headerIdProjectInTeam.add(new Label("Project"));
 
-        headerCheckbox.add(new CheckBox());
-        headerIdMember.add("idMember");
-        headerMemberInTeam.add(new Label("Members"));
-        headerRolesInTeam.add(new Label("Roles"));
-        headerIdProjectInTeam.add(new Label("Project"));
+            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
+            grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,1);
+            grid.add(headerRolesInTeam.get(headerRolesInTeam.size()-1),3,1);
 
-        grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
-        grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,1);
-        grid.add(headerRolesInTeam.get(headerRolesInTeam.size()-1),3,1);
-
-        //Get Response
-        InputStream is = con.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-        String line;
-        while ((line = rd.readLine()) != null)
-        {
-            response.append(line);
-            response.append('\r');
-        }
-        rd.close();
-        JSONArray jsonArray = new JSONArray("["+response.toString()+"]");
-        int i;
-        int k=0;
-        for (i = 0; i < jsonArray.length(); i++) {
-            JSONObject explrObject = jsonArray.getJSONObject(i);
-
-
-            headerIdProjectInTeam.add(new Label(explrObject.getString("project")));
-            JSONArray arrayRoleID = explrObject.getJSONArray("roleNumbers");
-            JSONArray arrayMemberID = explrObject.getJSONArray("members");
-            for (k=0;k<arrayMemberID.length();k++)
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null)
             {
-                headerCheckbox.add(new CheckBox());
-                headerRolesInTeam.add(new Label(this.getRoleById(arrayRoleID.getString(k))));
-                headerMemberInTeam.add(new Label(this.getUserById(arrayMemberID.getString(k))));
-                headerIdMember.add(arrayMemberID.getString(k));
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            JSONArray jsonArray = new JSONArray("["+response.toString()+"]");
+            int i;
+            int k=0;
+            for (i = 0; i < jsonArray.length(); i++) {
+                JSONObject explrObject = jsonArray.getJSONObject(i);
 
-                grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+k);
-                grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,2+k);
-                grid.add(headerRolesInTeam.get(headerRolesInTeam.size()-1),3,2+k);
+
+                headerIdProjectInTeam.add(new Label(explrObject.getString("project")));
+                JSONArray arrayRoleID = explrObject.getJSONArray("roleNumbers");
+                JSONArray arrayMemberID = explrObject.getJSONArray("members");
+                for (k=0;k<arrayMemberID.length();k++)
+                {
+                    headerCheckbox.add(new CheckBox());
+                    headerRolesInTeam.add(new Label(this.getRoleById(arrayRoleID.getString(k))));
+                    headerMemberInTeam.add(new Label(this.getUserById(arrayMemberID.getString(k))));
+                    headerIdMember.add(arrayMemberID.getString(k));
+
+                    grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+k);
+                    grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,2+k);
+                    grid.add(headerRolesInTeam.get(headerRolesInTeam.size()-1),3,2+k);
+                }
+
+                for(int j = 0; j < headerCheckbox.size(); j++)
+                {
+
+                    headerCheckbox.get(j).setPrefWidth(5*width/100);
+                    headerCheckbox.get(j).setPrefHeight(5*height/100);
+                    headerCheckbox.get(j).setWrapText(true);
+
+                    headerMemberInTeam.get(j).setPrefWidth(15*width/100);
+                    headerMemberInTeam.get(j).setPrefHeight(5*height/100);
+                    headerMemberInTeam.get(j).setWrapText(true);
+                    headerMemberInTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+
+                    headerRolesInTeam.get(j).setPrefWidth(15*width/100);
+                    headerRolesInTeam.get(j).setPrefHeight(5*height/100);
+                    headerRolesInTeam.get(j).setWrapText(true);
+                    headerRolesInTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+                }
             }
 
-            for(int j = 0; j < headerCheckbox.size(); j++)
+
+            grid.setVgap(height/100);
+            grid.setHgap(height/100);
+
+            TextArea mytext = new TextArea("You need to select a project to have acces here.");
+            mytext.setPrefWidth(25*width/100);
+            mytext.setPrefHeight(5*height/100);
+            mytext.setFont(Font.font("Arial",(int)fontSize/60));
+
+            deleteMember = new Button("Delete member");
+            addMember = new Button("Add member");
+
+            deleteMember.setFont(Font.font("Arial",(int)fontSize/65));
+            deleteMember.setPrefWidth(10*width/100);
+            deleteMember.setPrefHeight(7*height/100);
+            deleteMember.setOnAction(new DeleteMemberListener());
+
+            addMember.setFont(Font.font("Arial",(int)fontSize/65));
+            addMember.setPrefWidth(10*width/100);
+            addMember.setPrefHeight(7*height/100);
+            addMember.setOnAction(new GetFormAddMemberListener());
+
+            grid.add(deleteMember,1,2+k);
+            grid.add(addMember,2,2+k);
+
+            if(token.length()!=0)
             {
-
-                headerCheckbox.get(j).setPrefWidth(5*width/100);
-                headerCheckbox.get(j).setPrefHeight(5*height/100);
-                headerCheckbox.get(j).setWrapText(true);
-
-                headerMemberInTeam.get(j).setPrefWidth(15*width/100);
-                headerMemberInTeam.get(j).setPrefHeight(5*height/100);
-                headerMemberInTeam.get(j).setWrapText(true);
-                headerMemberInTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
-
-                headerRolesInTeam.get(j).setPrefWidth(15*width/100);
-                headerRolesInTeam.get(j).setPrefHeight(5*height/100);
-                headerRolesInTeam.get(j).setWrapText(true);
-                headerRolesInTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+                panelArray[8].setContent(grid);
             }
+            else{
+                panelArray[8].setContent(mytext);
+            }
+
+            headerCheckbox.get(0).setOnAction(new AllBoxesListener());
+            //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
         }
-
-
-        grid.setVgap(height/100);
-        grid.setHgap(height/100);
-
-        TextArea mytext = new TextArea("You need to select a project to have acces here.");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        mytext.setFont(Font.font("Arial",(int)fontSize/60));
-
-        deleteMember = new Button("Delete member");
-        addMember = new Button("Add member");
-
-        deleteMember.setFont(Font.font("Arial",(int)fontSize/65));
-        deleteMember.setPrefWidth(10*width/100);
-        deleteMember.setPrefHeight(7*height/100);
-        deleteMember.setOnAction(new DeleteMemberListener());
-
-        addMember.setFont(Font.font("Arial",(int)fontSize/65));
-        addMember.setPrefWidth(10*width/100);
-        addMember.setPrefHeight(7*height/100);
-        addMember.setOnAction(new GetFormAddMemberListener());
-
-        grid.add(deleteMember,1,2+k);
-        grid.add(addMember,2,2+k);
-
-        if(token.length()!=0)
-        {
-            panelArray[8].setContent(grid);
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
-        else{
-            panelArray[8].setContent(mytext);
-        }
-
-        headerCheckbox.get(0).setOnAction(new AllBoxesListener());
-        //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
     }
 
-    public String getRoleById(String roleId)throws IOException, JSONException
+    public String getRoleById(String roleId)
     {
-        URL url=new URL("http://localhost:8080/roles/"+roleId);
-        HttpURLConnection con =(HttpURLConnection) url.openConnection();
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Accept", "application/json");
-        con.setRequestProperty("Authorization", token);
-        //System.out.println(token);
-        con.setRequestMethod("GET");
+        try{
+            URL url=new URL("http://localhost:8080/roles/"+roleId);
+            HttpURLConnection con =(HttpURLConnection) url.openConnection();
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestProperty("Authorization", token);
+            //System.out.println(token);
+            con.setRequestMethod("GET");
 
-        //Get Response
-        InputStream is = con.getInputStream();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-        String line;
-        while ((line = rd.readLine()) != null)
-        {
-            response.append(line);
-            response.append('\r');
+            //Get Response
+            InputStream is = con.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null)
+            {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+
+            JSONObject explrObject = new JSONObject(response.toString());
+            String roles=explrObject.getString("title");
+            return roles;
         }
-        rd.close();
-
-        JSONObject explrObject = new JSONObject(response.toString());
-        String roles=explrObject.getString("title");
-        return roles;
+        catch (IOException | JSONException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        return "";
     }
 
     public void displayWorkspaces()
@@ -834,7 +1006,7 @@ public class PanelEast  extends StackPane {
             }
             else
             {
-                displayTimer();
+                displayTasks();
             }
         }
     }
@@ -1030,13 +1202,7 @@ public class PanelEast  extends StackPane {
     {
         @Override
         public void handle(ActionEvent e) {
-            try {
-                displayAddMember();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
+            displayAddMember();
         }
     }
 
@@ -1131,6 +1297,33 @@ public class PanelEast  extends StackPane {
             {
                 exc.printStackTrace();
             }
+        }
+    }
+
+    class SelectTaskListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+
+        }
+    }
+
+    class GetFormAddTaskListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+
+        }
+    }
+
+    class DeleteTaskListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+
         }
     }
 }
