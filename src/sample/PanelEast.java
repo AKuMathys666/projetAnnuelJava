@@ -14,7 +14,12 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class PanelEast  extends StackPane {
 
@@ -32,6 +37,7 @@ public class PanelEast  extends StackPane {
     private TextArea lastName;
     private Button submit;
     private Button submitProject;
+    private Button submitTask;
     private Label erreurLogged;
 
     private Label labelTitre;
@@ -56,20 +62,24 @@ public class PanelEast  extends StackPane {
     private ArrayList<Label>  headerDuration = new ArrayList<Label>();
     private ArrayList<Label> headerEndDate = new ArrayList<Label>();
 
-    private Button deleteProject = new Button();
-    private Button selectProject = new Button();
-    private Button addProject = new Button();
+    private Button deleteProject;
+    private Button selectProject;
+    private Button addProject;
 
-    private Button deleteMember = new Button();
-    private Button addMember = new Button();
-    private Button postAddMember = new Button();
+    private Button deleteMember;
+    private Button addMember;
+    private Button postAddMember;
 
     private String selectedProjet;
     private String selectedTeam;
+    private String selectedTask;
 
-    private Button deleteTask = new Button();
-    private Button selectTask = new Button();
-    private Button addTask = new Button();
+    private Button deleteTask;
+    private Button selectTask;
+    private Button addTask;
+
+    private Label labelTaskName;
+    private TextArea taskName;
 
     public ScrollPane[] panelArray= new ScrollPane[10];
 
@@ -138,8 +148,6 @@ public class PanelEast  extends StackPane {
         grid.setPadding(new Insets(5*height/100, 50*width/100, 39*height/100, 5*width/100));
         panelArray[0].setVisible(true);
         panelArray[0].setManaged(true);
-        //panelArray[0].setBorder(BorderFactory.createEmptyBorder(5*height/100, 5*height/100, 30*height/100, 40*width/100));
-        //panelArray[0].setOpaque(false);
         grid.setVgap(height/100);
         grid.setHgap(height/100);
         panelArray[0].setContent(grid);
@@ -152,9 +160,6 @@ public class PanelEast  extends StackPane {
         login = new TextArea();
         login.setPrefWidth(20*width/100);
         login.setPrefHeight(5*height/100);
-        //login.setMargin(new Insets(0,height/100,0,0));
-        //login.setLineWrap(true);
-        //login.setWrapStyleWord(true);
         login.setFont(Font.font("Arial",(int)fontSize/60));
 
         labelPassword = new Label("Password : ");
@@ -165,8 +170,6 @@ public class PanelEast  extends StackPane {
         password = new PasswordField();
         password.setPrefWidth(15*width/100);
         password.setPrefHeight(5*height/100);
-        //password.setMargin(new Insets(0,height/100,0,0));
-        //password.setBackground(new Color(222,222,222));
         password.setFont(Font.font("Arial",(int)fontSize/60));
 
         labelFirstName = new Label("First Name : ");
@@ -177,10 +180,6 @@ public class PanelEast  extends StackPane {
         firstName = new TextArea();
         firstName.setPrefWidth(20*width/100);
         firstName.setPrefHeight(5*height/100);
-        //firstName.setMargin(new Insets(0,height/100,0,0));
-        //firstName.setLineWrap(true);
-        //firstName.setWrapStyleWord(true);
-        //firstName.setBackground(new Color(222,222,222));
         firstName.setFont(Font.font("Arial",(int)fontSize/60));
 
         labelLastName = new Label("Last Name : ");
@@ -191,22 +190,12 @@ public class PanelEast  extends StackPane {
         lastName = new TextArea();
         lastName.setPrefWidth(20*width/100);
         lastName.setPrefHeight(5*height/100);
-        //lastName.setMargin(new Insets(0,height/100,0,0));
-        //lastName.setLineWrap(true);
-        //lastName.setWrapStyleWord(true);
-        //lastName.setBackground(new Color(222,222,222));
         lastName.setFont(Font.font("Arial",(int)fontSize/60));
 
         submit = new Button("Submit");
-        //submit.setContentAreaFilled(false);
         submit.setPrefWidth(10*width/100);
         submit.setPrefHeight(5*height/100);
-        //submit.setMargin(new Insets(0,height/100,0,0));
         submit.setFont(Font.font("Arial",(int)fontSize/60));
-        //submit.setFocusPainted(false);
-        //submit.setMargin(new Insets(1,1,1,1));
-        //submit.setBackground(new Color(222,222,222));
-        //submit.addActionListener(new SubmitCreationListener());
         submit.setOnAction(new SubmitCreationListener());
 
         erreurLogged = new Label("");
@@ -237,14 +226,14 @@ public class PanelEast  extends StackPane {
         }
         panelArray[1].setVisible(true);
         panelArray[1].setManaged(true);
-        TextArea mytext = new TextArea("displayTimer In progress");
+        /*TextArea mytext = new TextArea("displayTimer In progress");
         mytext.setPrefWidth(25*width/100);
         mytext.setPrefHeight(5*height/100);
         mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[1].setContent(mytext);
+        panelArray[1].setContent(mytext);*/
     }
 
-    public void displayCreateTask()
+    public void displayAddTask()
     {
         clearAllArray();
         for (int i=0;i<10;i++)
@@ -254,11 +243,29 @@ public class PanelEast  extends StackPane {
         }
         panelArray[2].setVisible(true);
         panelArray[2].setManaged(true);
-        TextArea mytext = new TextArea("displayDashboard In progress");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[2].setContent(mytext);
+
+        GridPane grid = new GridPane();
+
+        labelTaskName = new Label("Task name");
+        labelTaskName.setPrefWidth(10*width/100);
+        labelTaskName.setPrefHeight(5*height/100);
+        labelTaskName.setFont(Font.font("Arial",(int)fontSize/60));
+
+        taskName = new TextArea();
+        taskName.setPrefWidth(20*width/100);
+        taskName.setPrefHeight(5*height/100);
+        taskName.setFont(Font.font("Arial",(int)fontSize/60));
+
+        submitTask = new Button("Submit");
+        submitTask.setOnAction(new SubmitFormAddTaskListener());
+        erreurLogged = new Label("");
+
+        grid.add(labelTaskName,1,1);
+        grid.add(taskName,2,1);
+        grid.add(submitTask,1,2);
+        grid.add(erreurLogged,2,2);
+
+        panelArray[2].setContent(grid);
     }
 
     public void displayAddMember()
@@ -365,8 +372,8 @@ public class PanelEast  extends StackPane {
         GridPane grid = new GridPane();
 
         try {
-            System.out.println("http://localhost:8080/tasks/" + selectedProjet);
-            URL url = new URL("http://localhost:8080/tasks/" + selectedProjet);
+            System.out.println("http://localhost:8080/tasks");
+            URL url = new URL("http://localhost:8080/tasks");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("Authorization", token);
             con.setRequestMethod("GET");
@@ -404,15 +411,15 @@ public class PanelEast  extends StackPane {
                 headerCheckbox.add(new CheckBox());
                 headerIdTask.add(explrObject.getString("_id"));
                 headerTaskName.add(new Label(explrObject.getString("title")));
-                headerStartDate.add(new Label(explrObject.getString("startDate")));
-                headerDuration.add(new Label(explrObject.getString("times")));
-                headerEndDate.add(new Label(explrObject.getString("endDate")));
+                headerStartDate.add(new Label(explrObject.getString("startDate").toString()));
+                headerDuration.add(new Label(Integer.toString(explrObject.getInt("times"))));
+                //headerEndDate.add(new Label(explrObject.getString("endDate").toString()));
 
                 grid.add(headerCheckbox.get(headerCheckbox.size() - 1), 1, 2 + i);
                 grid.add(headerTaskName.get(headerTaskName.size() - 1), 2, 2 + i);
                 grid.add(headerStartDate.get(headerStartDate.size() - 1), 3, 2 + i);
                 grid.add(headerDuration.get(headerDuration.size() - 1), 4, 2 + i);
-                grid.add(headerEndDate.get(headerEndDate.size() - 1), 5, 2 + i);
+                //grid.add(headerEndDate.get(headerEndDate.size() - 1), 5, 2 + i);
 
                 for (int j = 0; j < headerCheckbox.size(); j++) {
 
@@ -435,10 +442,10 @@ public class PanelEast  extends StackPane {
                     headerDuration.get(j).setWrapText(true);
                     headerDuration.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
 
-                    headerEndDate.get(j).setPrefWidth(15 * width / 100);
-                    headerEndDate.get(j).setPrefHeight(5 * height / 100);
-                    headerEndDate.get(j).setWrapText(true);
-                    headerEndDate.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+                    //headerEndDate.get(j).setPrefWidth(15 * width / 100);
+                    //headerEndDate.get(j).setPrefHeight(5 * height / 100);
+                    //headerEndDate.get(j).setWrapText(true);
+                    //headerEndDate.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
                 }
             }
             grid.setVgap(height / 100);
@@ -768,7 +775,7 @@ public class PanelEast  extends StackPane {
         return "";
     }
 
-    public void displayClients()
+    public void displayNothing()
     {
         clearAllArray();
         for (int i=0;i<10;i++)
@@ -778,11 +785,6 @@ public class PanelEast  extends StackPane {
         }
         panelArray[7].setVisible(true);
         panelArray[7].setManaged(true);
-        TextArea mytext = new TextArea("displayClients In progress");
-        mytext.setPrefWidth(25*width/100);
-        mytext.setPrefHeight(5*height/100);
-        mytext.setFont(Font.font("Arial",(int)fontSize/60));
-        panelArray[7].setContent(mytext);
     }
 
     public void displayTeam()
@@ -799,115 +801,111 @@ public class PanelEast  extends StackPane {
         panelArray[8].setManaged(true);
 
         GridPane grid = new GridPane();
-        try{
-            URL url=new URL("http://localhost:8080/teams/"+selectedTeam);
-            HttpURLConnection con =(HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Authorization", token);
-            con.setRequestMethod("GET");
+        if(selectedTeam!=null) {
+            try {
+                URL url = new URL("http://localhost:8080/teams/" + selectedTeam);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestProperty("Authorization", token);
+                con.setRequestMethod("GET");
 
-            headerCheckbox.clear();
+                headerCheckbox.clear();
 
-            headerCheckbox.add(new CheckBox());
-            headerIdMember.add("idMember");
-            headerMemberInTeam.add(new Label("Members"));
-            headerRolesInTeam.add(new Label("Roles"));
-            headerIdProjectInTeam.add(new Label("Project"));
+                headerCheckbox.add(new CheckBox());
+                headerIdMember.add("idMember");
+                headerMemberInTeam.add(new Label("Members"));
+                headerRolesInTeam.add(new Label("Roles"));
+                headerIdProjectInTeam.add(new Label("Project"));
 
-            grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,1);
-            grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,1);
-            grid.add(headerRolesInTeam.get(headerRolesInTeam.size()-1),3,1);
+                grid.add(headerCheckbox.get(headerCheckbox.size() - 1), 1, 1);
+                grid.add(headerMemberInTeam.get(headerMemberInTeam.size() - 1), 2, 1);
+                grid.add(headerRolesInTeam.get(headerRolesInTeam.size() - 1), 3, 1);
 
-            //Get Response
-            InputStream is = con.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-            String line;
-            while ((line = rd.readLine()) != null)
-            {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-            JSONArray jsonArray = new JSONArray("["+response.toString()+"]");
-            int i;
-            int k=0;
-            for (i = 0; i < jsonArray.length(); i++) {
-                JSONObject explrObject = jsonArray.getJSONObject(i);
+                //Get Response
+                InputStream is = con.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                    response.append('\r');
+                }
+                rd.close();
+                JSONArray jsonArray = new JSONArray("[" + response.toString() + "]");
+                int i;
+                int k = 0;
+                for (i = 0; i < jsonArray.length(); i++) {
+                    JSONObject explrObject = jsonArray.getJSONObject(i);
 
 
-                headerIdProjectInTeam.add(new Label(explrObject.getString("project")));
-                JSONArray arrayRoleID = explrObject.getJSONArray("roleNumbers");
-                JSONArray arrayMemberID = explrObject.getJSONArray("members");
-                for (k=0;k<arrayMemberID.length();k++)
-                {
-                    headerCheckbox.add(new CheckBox());
-                    headerRolesInTeam.add(new Label(this.getRoleById(arrayRoleID.getString(k))));
-                    headerMemberInTeam.add(new Label(this.getUserById(arrayMemberID.getString(k))));
-                    headerIdMember.add(arrayMemberID.getString(k));
+                    headerIdProjectInTeam.add(new Label(explrObject.getString("project")));
+                    JSONArray arrayRoleID = explrObject.getJSONArray("roleNumbers");
+                    JSONArray arrayMemberID = explrObject.getJSONArray("members");
+                    for (k = 0; k < arrayMemberID.length(); k++) {
+                        headerCheckbox.add(new CheckBox());
+                        headerRolesInTeam.add(new Label(this.getRoleById(arrayRoleID.getString(k))));
+                        headerMemberInTeam.add(new Label(this.getUserById(arrayMemberID.getString(k))));
+                        headerIdMember.add(arrayMemberID.getString(k));
 
-                    grid.add(headerCheckbox.get(headerCheckbox.size()-1),1,2+k);
-                    grid.add(headerMemberInTeam.get(headerMemberInTeam.size()-1),2,2+k);
-                    grid.add(headerRolesInTeam.get(headerRolesInTeam.size()-1),3,2+k);
+                        grid.add(headerCheckbox.get(headerCheckbox.size() - 1), 1, 2 + k);
+                        grid.add(headerMemberInTeam.get(headerMemberInTeam.size() - 1), 2, 2 + k);
+                        grid.add(headerRolesInTeam.get(headerRolesInTeam.size() - 1), 3, 2 + k);
+                    }
+
+                    for (int j = 0; j < headerCheckbox.size(); j++) {
+
+                        headerCheckbox.get(j).setPrefWidth(5 * width / 100);
+                        headerCheckbox.get(j).setPrefHeight(5 * height / 100);
+                        headerCheckbox.get(j).setWrapText(true);
+
+                        headerMemberInTeam.get(j).setPrefWidth(15 * width / 100);
+                        headerMemberInTeam.get(j).setPrefHeight(5 * height / 100);
+                        headerMemberInTeam.get(j).setWrapText(true);
+                        headerMemberInTeam.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+
+                        headerRolesInTeam.get(j).setPrefWidth(15 * width / 100);
+                        headerRolesInTeam.get(j).setPrefHeight(5 * height / 100);
+                        headerRolesInTeam.get(j).setWrapText(true);
+                        headerRolesInTeam.get(j).setFont(Font.font("Arial", (int) fontSize / 70));
+                    }
                 }
 
-                for(int j = 0; j < headerCheckbox.size(); j++)
-                {
 
-                    headerCheckbox.get(j).setPrefWidth(5*width/100);
-                    headerCheckbox.get(j).setPrefHeight(5*height/100);
-                    headerCheckbox.get(j).setWrapText(true);
+                grid.setVgap(height / 100);
+                grid.setHgap(height / 100);
 
-                    headerMemberInTeam.get(j).setPrefWidth(15*width/100);
-                    headerMemberInTeam.get(j).setPrefHeight(5*height/100);
-                    headerMemberInTeam.get(j).setWrapText(true);
-                    headerMemberInTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+                TextArea mytext = new TextArea("You need to select a project to have acces here.");
+                mytext.setPrefWidth(25 * width / 100);
+                mytext.setPrefHeight(5 * height / 100);
+                mytext.setFont(Font.font("Arial", (int) fontSize / 60));
 
-                    headerRolesInTeam.get(j).setPrefWidth(15*width/100);
-                    headerRolesInTeam.get(j).setPrefHeight(5*height/100);
-                    headerRolesInTeam.get(j).setWrapText(true);
-                    headerRolesInTeam.get(j).setFont(Font.font("Arial",(int)fontSize/70));
+                deleteMember = new Button("Delete member");
+                addMember = new Button("Add member");
+
+                deleteMember.setFont(Font.font("Arial", (int) fontSize / 65));
+                deleteMember.setPrefWidth(10 * width / 100);
+                deleteMember.setPrefHeight(7 * height / 100);
+                deleteMember.setOnAction(new DeleteMemberListener());
+
+                addMember.setFont(Font.font("Arial", (int) fontSize / 65));
+                addMember.setPrefWidth(10 * width / 100);
+                addMember.setPrefHeight(7 * height / 100);
+                addMember.setOnAction(new GetFormAddMemberListener());
+
+                grid.add(deleteMember, 1, 2 + k);
+                grid.add(addMember, 2, 2 + k);
+
+                if (token.length() != 0) {
+                    panelArray[8].setContent(grid);
+                } else {
+                    panelArray[8].setContent(mytext);
                 }
+
+                headerCheckbox.get(0).setOnAction(new AllBoxesListener());
+                //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
+            } catch (IOException | JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
-
-
-            grid.setVgap(height/100);
-            grid.setHgap(height/100);
-
-            TextArea mytext = new TextArea("You need to select a project to have acces here.");
-            mytext.setPrefWidth(25*width/100);
-            mytext.setPrefHeight(5*height/100);
-            mytext.setFont(Font.font("Arial",(int)fontSize/60));
-
-            deleteMember = new Button("Delete member");
-            addMember = new Button("Add member");
-
-            deleteMember.setFont(Font.font("Arial",(int)fontSize/65));
-            deleteMember.setPrefWidth(10*width/100);
-            deleteMember.setPrefHeight(7*height/100);
-            deleteMember.setOnAction(new DeleteMemberListener());
-
-            addMember.setFont(Font.font("Arial",(int)fontSize/65));
-            addMember.setPrefWidth(10*width/100);
-            addMember.setPrefHeight(7*height/100);
-            addMember.setOnAction(new GetFormAddMemberListener());
-
-            grid.add(deleteMember,1,2+k);
-            grid.add(addMember,2,2+k);
-
-            if(token.length()!=0)
-            {
-                panelArray[8].setContent(grid);
-            }
-            else{
-                panelArray[8].setContent(mytext);
-            }
-
-            headerCheckbox.get(0).setOnAction(new AllBoxesListener());
-            //System.out.println("display team: checkbox size = "+headerCheckbox.size()+"; headerMemberInTeam size = "+headerMemberInTeam.size());
-        }
-        catch (IOException | JSONException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
         }
     }
 
@@ -1006,6 +1004,8 @@ public class PanelEast  extends StackPane {
             }
             else
             {
+
+                selectedTask="";
                 displayTasks();
             }
         }
@@ -1134,6 +1134,7 @@ public class PanelEast  extends StackPane {
                     exc.printStackTrace();
                 }
             }
+            displayNothing();
         }
     }
 
@@ -1305,6 +1306,25 @@ public class PanelEast  extends StackPane {
         @Override
         public void handle(ActionEvent e)
         {
+            int nbrSelected=0;
+            for (int incr = 0; incr < headerCheckbox.size(); incr++)
+            {
+                if (headerCheckbox.get(incr).isSelected())
+                {
+                    nbrSelected++;
+                    selectedTask=headerIdTask.get(incr);
+                }
+            }
+            if(nbrSelected !=1)
+            {
+                selectedTask="";
+            }
+            else
+            {
+
+                displayTimer();
+            }
+
 
         }
     }
@@ -1314,7 +1334,7 @@ public class PanelEast  extends StackPane {
         @Override
         public void handle(ActionEvent e)
         {
-
+            displayAddTask();
         }
     }
 
@@ -1323,7 +1343,112 @@ public class PanelEast  extends StackPane {
         @Override
         public void handle(ActionEvent e)
         {
+            for(int i=1;i<headerCheckbox.size();i++)
+            {
+                if(headerCheckbox.get(i).isSelected()==true){
+                    try {
+                        URL url=new URL("http://localhost:8080/tasks/"+headerIdTask.get(i));
+                        HttpURLConnection con =(HttpURLConnection) url.openConnection();
+                        con.setRequestProperty("Content-Type", "application/json");
+                        con.setRequestProperty("Accept", "application/json");
+                        con.setRequestProperty("Authorization", token);
+                        //System.out.println(token);
+                        con.setRequestMethod("DELETE");
 
+                        //Get Response
+                        InputStream is = con.getInputStream();
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                        StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+                        String line;
+                        while ((line = rd.readLine()) != null)
+                        {
+                            response.append(line);
+                            response.append('\r');
+                        }
+                        rd.close();
+                    }
+                    catch(Exception exc)
+                    {
+                        exc.printStackTrace();
+                    }
+                }
+            }
+            try {
+                displayTasks();
+            }
+            catch (Exception exc)
+            {
+                exc.printStackTrace();
+            }
+        }
+    }
+
+    class SubmitFormAddTaskListener implements EventHandler<ActionEvent>
+    {
+        @Override
+        public void handle(ActionEvent e)
+        {
+            String tryTaskName=taskName.getText();
+            TimeZone tz = TimeZone.getTimeZone("UTC+1");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            df.setTimeZone(tz);
+            String currentDate = df.format(new Timestamp(System.currentTimeMillis()));
+            System.out.println(currentDate);
+
+            erreurLogged.setText("");
+            if (tryTaskName.length()==0)
+            {
+                erreurLogged.setText(erreurLogged.getText()+"Login is empty. ");
+            }
+            System.out.println(erreurLogged.getText().length()+erreurLogged.getText());
+            if(erreurLogged.getText().length() == 0)
+            {
+                try
+                {
+                    URL url=new URL("http://localhost:8080/tasks/"+selectedProjet);
+                    HttpURLConnection co =(HttpURLConnection) url.openConnection();
+                    co.setRequestProperty("Content-Type", "application/json");
+                    co.setRequestProperty("Accept", "application/json");
+                    co.setRequestProperty("Authorization", token);
+                    co.setDoOutput(true);
+                    co.setRequestMethod("POST");
+
+                    JSONObject cred   = new JSONObject();
+
+                    cred.put("title",tryTaskName);
+                    cred.put("startDate",currentDate);
+                    OutputStreamWriter wr = new OutputStreamWriter(co.getOutputStream());
+                    wr.write(cred.toString());
+                    wr.flush();
+
+                    StringBuilder sb = new StringBuilder();
+                    int HttpResult = co.getResponseCode();
+                    if (HttpResult == HttpURLConnection.HTTP_OK)
+                    {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(co.getInputStream(), "utf-8"));
+                        String line = null;
+                        while ((line = br.readLine()) != null)
+                        {
+                            sb.append(line + "\n");
+                        }
+                        br.close();
+                    }
+                    else
+                    {
+                        if (HttpResult == 403)
+                        {
+                            erreurLogged.setText("This user already exist.");
+                        }
+
+                        System.out.println(co.getResponseMessage());
+                    }
+                }
+                catch(Exception exc)
+                {
+                    exc.printStackTrace();
+                }
+            }
+            displayTimer();
         }
     }
 }
